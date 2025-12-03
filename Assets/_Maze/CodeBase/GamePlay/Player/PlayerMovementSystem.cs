@@ -37,6 +37,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         public void Tick()
         {
+
             if (_playerTransform != null)
             {
                 _moveTimer -= Time.deltaTime;
@@ -47,7 +48,7 @@ namespace _Maze.CodeBase.GamePlay.Player
                 }
 
                 Vector2 pos = _inputStateProvider.GetMovementDirection();
-                Vector2Int transformedPos = new Vector2Int((int)pos.x, (int)pos.y);
+                Vector2Int transformedPos = new Vector2Int((int) pos.x, (int) pos.y);
                 MoveTo(transformedPos);
             }
         }
@@ -60,7 +61,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         private void MoveTo(Vector2Int direction)
         {
-            if (direction != Vector2Int.zero) ;
+            if (direction != Vector2Int.zero)
             {
                 if (!_mazeGenerator.IsWallInFront(_currentPosition, direction))
                 {

@@ -8,6 +8,5 @@ namespace _Maze.CodeBase.GamePlay.Player
         event Action<Vector2Int> OnMove;
         void SetTargetTransform(Transform playerTransform);
         void SetStartPoint(Vector2Int position);
-        void Tick();
     }
 }

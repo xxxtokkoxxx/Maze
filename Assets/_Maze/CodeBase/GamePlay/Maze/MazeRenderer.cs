@@ -21,9 +21,9 @@ namespace _Maze.CodeBase.GamePlay.Maze
         {
             DestroyWalls();
 
-            int width = _mazeGenerator.MazeConfiguration.Width;
-            int height = _mazeGenerator.MazeConfiguration.Height;
-            float cellSize = _mazeGenerator.MazeConfiguration.CellSize;
+            int width = _mazeGenerator.MazeData.Width;
+            int height = _mazeGenerator.MazeData.Height;
+            float cellSize = _mazeGenerator.MazeData.CellSize;
 
             CreateVerticalWalls(width, height, cellSize);
             CreateHorizontalWalls(width, height, cellSize);

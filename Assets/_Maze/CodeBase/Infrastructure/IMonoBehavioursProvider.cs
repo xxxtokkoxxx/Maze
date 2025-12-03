@@ -6,5 +6,7 @@ namespace _Maze.CodeBase.Infrastructure
     {
         Transform MazeSpawnPoint { get; }
         Transform CameraTransform { get; }
+        Transform UISpawnPoint { get; }
+        Transform HUDSpawnPoint { get; }
     }
 }

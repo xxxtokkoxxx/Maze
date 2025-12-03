@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Maze.CodeBase.Data;
 using _Maze.CodeBase.Extensions;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -13,7 +14,7 @@ namespace _Maze.CodeBase.GamePlay.Maze
         private bool[,] _horizontalWalls;
         private bool[,] _visited;
 
-        public MazeConfiguration MazeConfiguration => _mazeConfiguration;
+        public MazeData MazeData => _mazeData;
 
         private Vector2Int[] _directions =
         {
@@ -23,13 +24,13 @@ namespace _Maze.CodeBase.GamePlay.Maze
             new(0, -1)
         };
 
-        private MazeConfiguration _mazeConfiguration;
+        private MazeData _mazeData;
 
-        public void GenerateMaze(MazeConfiguration mazeConfiguration)
+        public void GenerateMaze(MazeData mazeData)
         {
-            _mazeConfiguration = mazeConfiguration;
-            int width = _mazeConfiguration.Width;
-            int height = _mazeConfiguration.Height;
+            _mazeData = mazeData;
+            int width = _mazeData.Width;
+            int height = _mazeData.Height;
 
             _verticalWalls = new bool[width + 1, height];
             _horizontalWalls = new bool[width, height + 1];
@@ -65,7 +66,7 @@ namespace _Maze.CodeBase.GamePlay.Maze
 
         public Vector2Int GetCentralPosition()
         {
-            return new Vector2Int(_mazeConfiguration.Width / 2, _mazeConfiguration.Height / 2);
+            return new Vector2Int(_mazeData.Width / 2, _mazeData.Height / 2);
         }
 
         public bool HorizontalWallExistsAt(int x, int y)
@@ -89,7 +90,7 @@ namespace _Maze.CodeBase.GamePlay.Maze
                 int nextX = x + direction.x;
                 int nextY = y + direction.y;
 
-                if (nextX < 0 || nextY < 0 || nextX >= _mazeConfiguration.Width || nextY >= _mazeConfiguration.Height)
+                if (nextX < 0 || nextY < 0 || nextX >= _mazeData.Width || nextY >= _mazeData.Height)
                 {
                     continue;
                 }
@@ -140,21 +141,21 @@ namespace _Maze.CodeBase.GamePlay.Maze
         {
             List<(bool isHorizontal, int x, int y)> exitWalls = new();
 
-            for (int x = 0; x < _mazeConfiguration.Width; x++)
+            for (int x = 0; x < _mazeData.Width; x++)
             {
                 exitWalls.Add((true, x, 0));
-                exitWalls.Add((true, x, _mazeConfiguration.Height));
+                exitWalls.Add((true, x, _mazeData.Height));
             }
 
-            for (int y = 0; y < _mazeConfiguration.Height; y++)
+            for (int y = 0; y < _mazeData.Height; y++)
             {
                 exitWalls.Add((false, 0, y));
-                exitWalls.Add((false, _mazeConfiguration.Width, y));
+                exitWalls.Add((false, _mazeData.Width, y));
             }
 
             exitWalls = exitWalls.OrderBy(_ => Random.value).ToList();
 
-            for (int i = 0; i < _mazeConfiguration.ExitsCount && i < exitWalls.Count; i++)
+            for (int i = 0; i < _mazeData.ExitsCount && i < exitWalls.Count; i++)
             {
                 (bool isHorizontal, int x, int y) wall = exitWalls[i];
 
@@ -171,17 +172,17 @@ namespace _Maze.CodeBase.GamePlay.Maze
 
         private void InitWalls()
         {
-            for (int x = 0; x < _mazeConfiguration.Width + 1; x++)
+            for (int x = 0; x < _mazeData.Width + 1; x++)
             {
-                for (int y = 0; y < _mazeConfiguration.Height; y++)
+                for (int y = 0; y < _mazeData.Height; y++)
                 {
                     _verticalWalls[x, y] = true;
                 }
             }
 
-            for (int x = 0; x < _mazeConfiguration.Width; x++)
+            for (int x = 0; x < _mazeData.Width; x++)
             {
-                for (int y = 0; y < _mazeConfiguration.Height + 1; y++)
+                for (int y = 0; y < _mazeData.Height + 1; y++)
                 {
                     _horizontalWalls[x, y] = true;
                 }
@@ -207,9 +208,9 @@ namespace _Maze.CodeBase.GamePlay.Maze
         {
             if (direction.x == 1)
             {
-                if (currentPosition.x + 1 >= _mazeConfiguration.Width)
+                if (currentPosition.x + 1 >= _mazeData.Width)
                 {
-                    return _verticalWalls[_mazeConfiguration.Width, currentPosition.y];
+                    return _verticalWalls[_mazeData.Width, currentPosition.y];
                 }
 
                 return _verticalWalls[currentPosition.x + 1, currentPosition.y];
@@ -222,9 +223,9 @@ namespace _Maze.CodeBase.GamePlay.Maze
         {
             if (direction.y == 1)
             {
-                if (currentPosition.y + 1 >= _mazeConfiguration.Height)
+                if (currentPosition.y + 1 >= _mazeData.Height)
                 {
-                    return _horizontalWalls[currentPosition.x, _mazeConfiguration.Height];
+                    return _horizontalWalls[currentPosition.x, _mazeData.Height];
                 }
 
                 return _horizontalWalls[currentPosition.x, currentPosition.y + 1];
