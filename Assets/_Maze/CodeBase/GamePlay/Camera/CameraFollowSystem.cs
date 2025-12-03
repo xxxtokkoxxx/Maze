@@ -20,7 +20,7 @@ namespace _Maze.CodeBase.GamePlay.Camera
         {
             _target = target;
             _isEnabled = true;
-            _cameraTransform = _monoBehavioursProvider.CameraTransform;
+            _cameraTransform = _monoBehavioursProvider.CachedCamera.transform;
         }
 
         public void Disable()

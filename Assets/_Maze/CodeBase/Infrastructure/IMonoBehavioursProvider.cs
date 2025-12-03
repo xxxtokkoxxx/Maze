@@ -5,7 +5,7 @@ namespace _Maze.CodeBase.Infrastructure
     public interface IMonoBehavioursProvider
     {
         Transform MazeSpawnPoint { get; }
-        Transform CameraTransform { get; }
+        Camera CachedCamera { get; }
         Transform UISpawnPoint { get; }
         Transform HUDSpawnPoint { get; }
     }
