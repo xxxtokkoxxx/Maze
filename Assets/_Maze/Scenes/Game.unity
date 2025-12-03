@@ -450,7 +450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mazeSpawnPoint: {fileID: 1877020887}
-  _cameraTransform: {fileID: 519420032}
+  _cachedCamera: {fileID: 519420031}
   _uiSpawnPoint: {fileID: 2047078927}
   _hudSpawnPoint: {fileID: 679285878}
 --- !u!114 &1325639152

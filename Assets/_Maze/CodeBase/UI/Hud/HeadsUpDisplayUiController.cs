@@ -1,4 +1,5 @@
-﻿using _Maze.CodeBase.Progress;
+﻿using _Maze.CodeBase.Infrastructure;
+using _Maze.CodeBase.Progress;
 using UnityEngine;
 
 namespace _Maze.CodeBase.UI.Hud
@@ -7,11 +8,14 @@ namespace _Maze.CodeBase.UI.Hud
     {
         private readonly IUIViewsFactory _viewsFactory;
         private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
+        private readonly IMonoBehavioursProvider _monoBehavioursProvider;
 
-        public HeadsUpDisplayUiController(IUIViewsFactory uiViewsFactory, IGameRuntimeDataContainer gameRuntimeDataContainer)
+        public HeadsUpDisplayUiController(IUIViewsFactory uiViewsFactory,
+            IGameRuntimeDataContainer gameRuntimeDataContainer, IMonoBehavioursProvider monoBehavioursProvider)
         {
             _viewsFactory = uiViewsFactory;
             _gameRuntimeDataContainer = gameRuntimeDataContainer;
+            _monoBehavioursProvider = monoBehavioursProvider;
         }
 
         public override ViewType ViewType => ViewType.Hud;
@@ -20,7 +24,8 @@ namespace _Maze.CodeBase.UI.Hud
         {
             if (View == null)
             {
-                View = _viewsFactory.CreateView<HeadsUpDisplayView>(ViewType.Hud);
+                View = _viewsFactory.CreateView<HeadsUpDisplayView>(ViewType.Hud,
+                    _monoBehavioursProvider.HUDSpawnPoint);
             }
 
             UpdateStepsCount(_gameRuntimeDataContainer.GetPlayerStepsCount());

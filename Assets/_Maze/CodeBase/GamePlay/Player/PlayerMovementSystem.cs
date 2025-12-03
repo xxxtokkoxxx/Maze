@@ -63,7 +63,18 @@ namespace _Maze.CodeBase.GamePlay.Player
                     return;
                 }
 
-                Vector2 pos = _inputStateProvider.GetMovementDirection();
+                Vector2 mousePosition = _inputStateProvider.GetMouseGridDirection(_playerTransform.position);
+                Vector2 pos;
+
+                if (mousePosition != Vector2Int.zero)
+                {
+                    pos = mousePosition;
+                }
+                else
+                {
+                    pos = _inputStateProvider.GetMovementDirection();;
+                }
+
                 Vector2Int transformedPos = new Vector2Int((int) pos.x, (int) pos.y);
                 MoveTo(transformedPos);
             }
