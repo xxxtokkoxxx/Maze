@@ -1,12 +1,13 @@
 using System;
 using _Maze.CodeBase.GamePlay.Maze;
+using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.Input;
 using UnityEngine;
 using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.Player
 {
-    public class PlayerMovementSystem : IPlayerMovementSystem, ITickable
+    public class PlayerMovementSystem : IPlayerMovementSystem, ITickable, IPauseable
     {
         public event Action<Vector2Int> OnMove;
 
@@ -18,11 +19,27 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         private readonly IInputStateProvider _inputStateProvider;
         private readonly IMazeGenerator _mazeGenerator;
+        private readonly IGamePauseProcessor _gamePauseProcessor;
+        private bool _isEnabled = true;
 
-        public PlayerMovementSystem(IInputStateProvider inputStateProvider, IMazeGenerator mazeGenerator)
+        public PlayerMovementSystem(IInputStateProvider inputStateProvider,
+            IMazeGenerator mazeGenerator, IGamePauseProcessor gamePauseProcessor)
         {
             _inputStateProvider = inputStateProvider;
             _mazeGenerator = mazeGenerator;
+            _gamePauseProcessor = gamePauseProcessor;
+        }
+
+        public void Initialize()
+        {
+            _isEnabled = true;
+            _gamePauseProcessor.AddPausable(this);
+        }
+
+        public void Dispose()
+        {
+            _isEnabled = false;
+            _gamePauseProcessor.RemovePausable(this);
         }
 
         public void SetTargetTransform(Transform playerTransform)
@@ -37,8 +54,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         public void Tick()
         {
-
-            if (_playerTransform != null)
+            if (_isEnabled && _playerTransform != null)
             {
                 _moveTimer -= Time.deltaTime;
 
@@ -51,6 +67,11 @@ namespace _Maze.CodeBase.GamePlay.Player
                 Vector2Int transformedPos = new Vector2Int((int) pos.x, (int) pos.y);
                 MoveTo(transformedPos);
             }
+        }
+
+        public void SetPaused(bool isPaused)
+        {
+            _isEnabled = !isPaused;
         }
 
         private void SetPositionOnCell(Vector2Int position)

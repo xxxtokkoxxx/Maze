@@ -1,6 +1,7 @@
 using _Maze.CodeBase.Data;
 using _Maze.CodeBase.GamePlay.Camera;
 using _Maze.CodeBase.GamePlay.Maze;
+using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Infrastructure;
 using _Maze.CodeBase.Input;
@@ -26,6 +27,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IUIService _uiService;
         private readonly IPlayerMovementSystem _playerMovementSystem;
         private readonly IGameRuntimeData _gameRuntimeData;
+        private readonly IGamePauseProcessor _gamePauseProcessor;
 
         public GameSessionRunner(IMazeRenderer mazeRenderer,
             IMazeGenerator mazeGenerator,
@@ -38,7 +40,8 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             IInputStateProvider inputStateProvider,
             IUIService uiService,
             IPlayerMovementSystem playerMovementSystem,
-            IGameRuntimeData gameRuntimeData)
+            IGameRuntimeData gameRuntimeData,
+            IGamePauseProcessor gamePauseProcessor)
         {
             _mazeRenderer = mazeRenderer;
             _mazeGenerator = mazeGenerator;
@@ -52,6 +55,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _uiService = uiService;
             _playerMovementSystem = playerMovementSystem;
             _gameRuntimeData = gameRuntimeData;
+            _gamePauseProcessor = gamePauseProcessor;
         }
 
         public async void StartGame(MazeData mazeData)
@@ -60,6 +64,8 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
             await _mazeFactory.LoadReferences();
             await _playerFactory.LoadPlayerReference();
+            _gamePauseProcessor.Initialize();
+            _playerMovementSystem.Initialize();
 
             SetGameRuntimeData(mazeData);
             ShiftMazeSpawnPoint(mazeData);
@@ -73,8 +79,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _cameraFollowSystem.Initialize(player.transform);
             _gamePlayProcessor.Run();
             _inputStateProvider.SetEnabled(true);
-
-            _uiService.ShowWindow(ViewType.Hud);
         }
 
         public void RestartGame()
@@ -97,21 +101,19 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _movementSystem.SetTargetTransform(player.transform);
             _movementSystem.SetStartPoint(playerStartPos);
             player.transform.localPosition = new Vector2(playerStartPos.x, playerStartPos.y);
-
-            _uiService.HideWindow(ViewType.GameOver);
         }
 
         public void EndGame()
         {
-            _uiService.ShowWindow(ViewType.MainMenu);
-            _uiService.HideWindow(ViewType.Hud);
-            _uiService.HideWindow(ViewType.GameOver);
             _cameraFollowSystem.Disable();
             _gamePlayProcessor.Stop();
+            _playerMovementSystem.Dispose();
 
             _mazeFactory.ReleaseResources();
             _playerFactory.ReleaseResources();
             _playerFactory.DestroyPlayerView();
+            _gamePauseProcessor.Dispose();
+            _mazeFactory.DestroyMazeEnvironment();
         }
 
         private void ShiftMazeSpawnPoint(MazeData mazeData)

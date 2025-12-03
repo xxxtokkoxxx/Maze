@@ -1,5 +1,5 @@
-using System.Timers;
 using _Maze.CodeBase.GamePlay.Maze;
+using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Input;
 using _Maze.CodeBase.Progress;
@@ -10,10 +10,10 @@ using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.GameSession
 {
-    public class GamePlayProcessor : IGamePlayProcessor, ITickable
+    public class GamePlayProcessor : IGamePlayProcessor, ITickable, IPauseable
     {
         private float _elapsedTime;
-        private bool _ssEnabled;
+        private bool _isEnabled;
         private int _minimalPlayerStepCount = 1;
 
         private readonly IPlayerMovementSystem _playerMovementSystem;
@@ -22,13 +22,15 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IUIService _uiService;
         private readonly IGameRuntimeData _gameRuntimeData;
         private readonly IHeadsUpDisplay _headsUpDisplay;
+        private readonly IGamePauseProcessor _pauseProcessor;
 
         public GamePlayProcessor(IPlayerMovementSystem playerMovementSystem,
             IMazeGenerator mazeGenerator,
             IInputStateProvider inputStateProvider,
             IUIService uiService,
             IGameRuntimeData gameRuntimeData,
-            IHeadsUpDisplay headsUpDisplay)
+            IHeadsUpDisplay headsUpDisplay,
+            IGamePauseProcessor pauseProcessor)
         {
             _playerMovementSystem = playerMovementSystem;
             _mazeGenerator = mazeGenerator;
@@ -36,16 +38,18 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _uiService = uiService;
             _gameRuntimeData = gameRuntimeData;
             _headsUpDisplay = headsUpDisplay;
+            _pauseProcessor = pauseProcessor;
         }
 
         public void Run()
         {
-            if (_ssEnabled)
+            if (_isEnabled)
                 return;
 
-            _ssEnabled = true;
+            _uiService.ShowWindow(ViewType.Hud);
+            _isEnabled = true;
             _elapsedTime = _gameRuntimeData.GetSessionTime();
-
+            _pauseProcessor.AddPausable(this);
             _playerMovementSystem.OnMove += OnPlayerMoved;
         }
 
@@ -58,13 +62,14 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         public void Stop()
         {
-            _ssEnabled = false;
+            _isEnabled = false;
+            _pauseProcessor.RemovePausable(this);
             _playerMovementSystem.OnMove -= OnPlayerMoved;
         }
 
         public void Tick()
         {
-            if (!_ssEnabled)
+            if (!_isEnabled)
             {
                 return;
             }
@@ -74,8 +79,12 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             int minutes = Mathf.FloorToInt(_elapsedTime / 60f);
             int seconds = Mathf.FloorToInt(_elapsedTime % 60f);
 
-            Debug.Log(_elapsedTime);
             _headsUpDisplay.UpdateTimer(minutes, seconds);
+        }
+
+        public void SetPaused(bool isPaused)
+        {
+            _isEnabled = !isPaused;
         }
 
         private void OnPlayerMoved(Vector2Int currentPosition)
@@ -85,8 +94,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
                 _inputStateProvider.SetEnabled(false);
                 _gameRuntimeData.SetSessionTime(_elapsedTime);
                 _uiService.ShowWindow(ViewType.GameOver);
-                Debug.Log("ELAPSED TIME GAME OVER " + _elapsedTime);
-                _ssEnabled = false;
+                _isEnabled = false;
             }
             else
             {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using _Maze.CodeBase.Input;
 using _Maze.CodeBase.UI;
+using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.Pause
 {
@@ -33,7 +34,8 @@ namespace _Maze.CodeBase.GamePlay.Pause
 
         public void SetPaused(bool isPaused)
         {
-            PauseInternal(isPaused);
+            _isPaused = isPaused;
+            Notify(isPaused);
         }
 
         private void Pause()
@@ -43,7 +45,10 @@ namespace _Maze.CodeBase.GamePlay.Pause
 
         public void AddPausable(IPauseable pauseable)
         {
-            _pauseables.Add(pauseable);
+            if (!_pauseables.Contains(pauseable))
+            {
+                _pauseables.Add(pauseable);
+            }
         }
 
         public void RemovePausable(IPauseable pauseable)
@@ -62,12 +67,16 @@ namespace _Maze.CodeBase.GamePlay.Pause
         {
             foreach (IPauseable pauseable in _pauseables)
             {
-                pauseable.SetPaused(isPaused);
+                if (pauseable != null)
+                {
+                    pauseable.SetPaused(isPaused);
+                }
             }
         }
 
         private void ShowPauseMenu(bool isPaused)
         {
+            Debug.Log(isPaused);
             if (isPaused)
             {
                 _uiService.ShowWindow(ViewType.Pause);
