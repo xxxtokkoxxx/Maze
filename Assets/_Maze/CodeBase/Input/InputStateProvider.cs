@@ -37,7 +37,10 @@ namespace _Maze.CodeBase.Input
 
         public void OnPause(InputAction.CallbackContext context)
         {
-            OnPaused?.Invoke();
+            if (context.phase == InputActionPhase.Performed)
+            {
+                OnPaused?.Invoke();
+            }
         }
     }
 }

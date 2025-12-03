@@ -15,7 +15,7 @@ namespace _Maze.CodeBase.UI.Pause
         private readonly IUIService _uiService;
         private readonly IUIViewsFactory _viewsFactory;
 
-        public override ViewType ViewType => ViewType.GameOver;
+        public override ViewType ViewType => ViewType.Pause;
 
         public PauseUIController(IUIViewsFactory viewsFactory,
             IGameSessionRunner gameSessionRunner,
@@ -85,6 +85,7 @@ namespace _Maze.CodeBase.UI.Pause
         private void ResumeGame()
         {
             _gamePauseProcessor.SetPaused(false);
+            _uiService.HideWindow(ViewType);
         }
 
         private void RestartGame()
@@ -96,6 +97,9 @@ namespace _Maze.CodeBase.UI.Pause
 
         private void GoToMainMenu()
         {
+            _uiService.HideWindow(ViewType.Hud);
+            _uiService.ShowWindow(ViewType.MainMenu);
+            _uiService.HideWindow(ViewType);
             _gameSessionRunner.EndGame();
             _gamePauseProcessor.SetPaused(false);
         }

@@ -10,17 +10,20 @@ namespace _Maze.CodeBase.UI.GameOver
 
         private readonly IGameSessionRunner _gameSessionRunner;
         private readonly IGameRuntimeData _gameRuntimeData;
+        private readonly IUIService _uiService;
         private readonly IUIViewsFactory _viewsFactory;
 
         public override ViewType ViewType => ViewType.GameOver;
 
          public GameOverUiController(IUIViewsFactory viewsFactory,
             IGameSessionRunner gameSessionRunner,
-            IGameRuntimeData gameRuntimeData)
+            IGameRuntimeData gameRuntimeData,
+            IUIService uiService)
         {
             _viewsFactory = viewsFactory;
             _gameSessionRunner = gameSessionRunner;
             _gameRuntimeData = gameRuntimeData;
+            _uiService = uiService;
         }
 
         public override void Show()
@@ -70,12 +73,17 @@ namespace _Maze.CodeBase.UI.GameOver
 
         private void RestartGame()
         {
+            _uiService.HideWindow(ViewType);
             _gameSessionRunner.RestartGame();
         }
 
         private void GoToMainMenu()
         {
             _gameSessionRunner.EndGame();
+
+            _uiService.HideWindow(ViewType.Hud);
+            _uiService.HideWindow(ViewType.GameOver);
+            _uiService.ShowWindow(ViewType.MainMenu);
         }
     }
 }
