@@ -1,10 +1,13 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.Maze
 {
     public interface IMazeFactory
     {
+        Task LoadReferences();
+        GameObject CreateWall(Vector2 position, Quaternion rotation, Transform parent);
+        void ReleaseResources();
         void DestroyMazeEnvironment();
-        GameObject CreateWall(Vector3 position, Quaternion rotation, Transform parent);
     }
 }

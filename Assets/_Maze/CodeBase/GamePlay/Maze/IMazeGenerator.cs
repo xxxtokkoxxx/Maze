@@ -1,5 +1,4 @@
-﻿using _Maze.CodeBase.Infrastructure;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.Maze
 {

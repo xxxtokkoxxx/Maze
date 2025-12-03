@@ -2,10 +2,11 @@ using System;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.Input;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.Player
 {
-    public class PlayerMovementSystem : IPlayerMovementSystem
+    public class PlayerMovementSystem : IPlayerMovementSystem, ITickable
     {
         public event Action<Vector2Int> OnMove;
 
@@ -46,7 +47,7 @@ namespace _Maze.CodeBase.GamePlay.Player
                 }
 
                 Vector2 pos = _inputStateProvider.GetMovementDirection();
-                Vector2Int transformedPos = new Vector2Int((int) pos.x, (int) pos.y);
+                Vector2Int transformedPos = new Vector2Int((int)pos.x, (int)pos.y);
                 MoveTo(transformedPos);
             }
         }
@@ -59,17 +60,17 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         private void MoveTo(Vector2Int direction)
         {
-            if (direction != Vector2Int.zero);
+            if (direction != Vector2Int.zero) ;
             {
                 if (!_mazeGenerator.IsWallInFront(_currentPosition, direction))
                 {
-                    Vector2Int nextPosition = new Vector2Int(_currentPosition.x + direction.x, _currentPosition.y + direction.y);
+                    Vector2Int nextPosition = new Vector2Int(_currentPosition.x + direction.x,
+                        _currentPosition.y + direction.y);
                     SetPositionOnCell(nextPosition);
                     _moveTimer = _moveCooldown;
                     OnMove?.Invoke(_currentPosition);
                 }
             }
         }
-
     }
 }
