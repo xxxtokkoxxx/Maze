@@ -1,3 +1,4 @@
+using _Maze.CodeBase.Data;
 using _Maze.CodeBase.GamePlay.Camera;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Player;
@@ -8,7 +9,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 {
     public class GameSessionRunner : IGameSessionRunner
     {
-        private MazeConfiguration _mazeConfiguration;
+        private MazeData _mazeData;
 
         private readonly IMazeRenderer _mazeRenderer;
         private readonly IMazeGenerator _mazeGenerator;
@@ -38,15 +39,15 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _monoBehavioursProvider = monoBehavioursProvider;
         }
 
-        public async void StartGame(MazeConfiguration mazeConfiguration)
+        public async void StartGame(MazeData mazeData)
         {
-            _mazeConfiguration = mazeConfiguration;
+            _mazeData = mazeData;
 
             await _mazeFactory.LoadReferences();
             await _playerFactory.LoadPlayerReference();
 
-            ShiftMazeSpawnPoint(mazeConfiguration);
-            _mazeGenerator.GenerateMaze(mazeConfiguration);
+            ShiftMazeSpawnPoint(mazeData);
+            _mazeGenerator.GenerateMaze(mazeData);
             _mazeRenderer.RenderWalls();
             Vector2Int playerStartPos = _mazeGenerator.GetCentralPosition();
             GameObject player = _playerFactory.CreatePlayer(playerStartPos, _monoBehavioursProvider.MazeSpawnPoint);
@@ -58,7 +59,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         public void RestartGame()
         {
-            _mazeGenerator.GenerateMaze(_mazeConfiguration);
+            _mazeGenerator.GenerateMaze(_mazeData);
             _mazeRenderer.RenderWalls();
             Vector2Int playerStartPos = _mazeGenerator.GetCentralPosition();
             var player = _playerFactory.GetPlayerView();
@@ -77,10 +78,10 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         {
         }
 
-        private void ShiftMazeSpawnPoint(MazeConfiguration mazeConfiguration)
+        private void ShiftMazeSpawnPoint(MazeData mazeData)
         {
-            float offsetX = -(mazeConfiguration.Width * mazeConfiguration.CellSize) / 2f;
-            float offsetY = -(mazeConfiguration.Height * mazeConfiguration.CellSize) / 2f;
+            float offsetX = -(mazeData.Width * mazeData.CellSize) / 2f;
+            float offsetY = -(mazeData.Height * mazeData.CellSize) / 2f;
 
             _monoBehavioursProvider.MazeSpawnPoint.transform.localPosition = new Vector2(offsetX, offsetY);
         }

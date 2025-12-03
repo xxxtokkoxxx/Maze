@@ -1,3 +1,4 @@
+using _Maze.CodeBase.Data;
 using _Maze.CodeBase.GamePlay.GameSession;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.Input;
@@ -39,7 +40,7 @@ namespace _Maze.CodeBase.Infrastructure
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
             {
-                _gameSessionRunner.StartGame(new MazeConfiguration(Width, Height, CellSize, ExistsCount));
+                _gameSessionRunner.StartGame(new MazeData(Width, Height, CellSize, ExistsCount));
             }
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2))

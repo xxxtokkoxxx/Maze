@@ -27,8 +27,8 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         private void IsPlayerOutOfMaze(Vector2Int currentPosition)
         {
-            int mazeWidth = _mazeGenerator.MazeConfiguration.Width;
-            int mazeHeight = _mazeGenerator.MazeConfiguration.Height;
+            int mazeWidth = _mazeGenerator.MazeData.Width;
+            int mazeHeight = _mazeGenerator.MazeData.Height;
 
             if (currentPosition.x < 0
                 || currentPosition.x >= mazeWidth
