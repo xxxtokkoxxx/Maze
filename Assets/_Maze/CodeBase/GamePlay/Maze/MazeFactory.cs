@@ -7,17 +7,23 @@ namespace _Maze.CodeBase.GamePlay.Maze
 {
     public class MazeFactory : IMazeFactory
     {
+        private readonly IAssetsLoaderService _assetsLoaderService;
         private GameObject _wallReference;
         private List<GameObject> _createdWalls = new();
 
-        public async Task LoadReferences()
+        public MazeFactory(IAssetsLoaderService assetsLoaderService)
         {
-            ResourceRequest resourceRequest = Resources.LoadAsync<GameObject>(AssetsDataPath.Wall);
-            await resourceRequest;
-            _wallReference = resourceRequest.asset as GameObject;
+            _assetsLoaderService = assetsLoaderService;
         }
 
-        public GameObject CreateWall(Vector3 position, Quaternion rotation, Transform parent)
+        public async Task LoadReferences()
+        {
+            Task<GameObject> loadingTask = _assetsLoaderService.LoadAsset(AssetsDataPath.Wall);
+            await loadingTask;
+            _wallReference = loadingTask.Result;
+        }
+
+        public GameObject CreateWall(Vector2 position, Quaternion rotation, Transform parent)
         {
             GameObject wall = Object.Instantiate(_wallReference, position, rotation, parent);
             wall.transform.localPosition = position;
@@ -27,7 +33,7 @@ namespace _Maze.CodeBase.GamePlay.Maze
 
         public void ReleaseResources()
         {
-            //TODO:release
+            _assetsLoaderService.Release(AssetsDataPath.Wall);
         }
 
         public void DestroyMazeEnvironment()
