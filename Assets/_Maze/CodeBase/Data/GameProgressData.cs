@@ -8,5 +8,12 @@ namespace _Maze.CodeBase.Data
         public int Seed { get; set; }
         public PlayerProgressData PlayerProgress { get; set; }
         public MazeData MazeData { get; set; }
+
+        public GameProgressData(int seed, PlayerProgressData playerProgress, MazeData mazeData)
+        {
+            Seed = seed;
+            PlayerProgress = playerProgress;
+            MazeData = mazeData;
+        }
     }
 }

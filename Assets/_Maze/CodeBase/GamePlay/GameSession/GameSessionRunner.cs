@@ -4,6 +4,8 @@ using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Infrastructure;
 using _Maze.CodeBase.Input;
+using _Maze.CodeBase.Progress;
+using _Maze.CodeBase.UI;
 using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.GameSession
@@ -21,6 +23,9 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IGamePlayProcessor _gamePlayProcessor;
         private readonly IMonoBehavioursProvider _monoBehavioursProvider;
         private readonly IInputStateProvider _inputStateProvider;
+        private readonly IUIService _uiService;
+        private readonly IPlayerMovementSystem _playerMovementSystem;
+        private readonly IGameRuntimeData _gameRuntimeData;
 
         public GameSessionRunner(IMazeRenderer mazeRenderer,
             IMazeGenerator mazeGenerator,
@@ -30,7 +35,10 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             ICameraFollowSystem cameraFollowSystem,
             IGamePlayProcessor gamePlayProcessor,
             IMonoBehavioursProvider monoBehavioursProvider,
-            IInputStateProvider inputStateProvider)
+            IInputStateProvider inputStateProvider,
+            IUIService uiService,
+            IPlayerMovementSystem playerMovementSystem,
+            IGameRuntimeData gameRuntimeData)
         {
             _mazeRenderer = mazeRenderer;
             _mazeGenerator = mazeGenerator;
@@ -41,6 +49,9 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _gamePlayProcessor = gamePlayProcessor;
             _monoBehavioursProvider = monoBehavioursProvider;
             _inputStateProvider = inputStateProvider;
+            _uiService = uiService;
+            _playerMovementSystem = playerMovementSystem;
+            _gameRuntimeData = gameRuntimeData;
         }
 
         public async void StartGame(MazeData mazeData)
@@ -50,7 +61,9 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             await _mazeFactory.LoadReferences();
             await _playerFactory.LoadPlayerReference();
 
+            SetGameRuntimeData(mazeData);
             ShiftMazeSpawnPoint(mazeData);
+
             _mazeGenerator.GenerateMaze(mazeData);
             _mazeRenderer.RenderWalls();
             Vector2Int playerStartPos = _mazeGenerator.GetCentralPosition();
@@ -58,16 +71,22 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _movementSystem.SetTargetTransform(player.transform);
             _movementSystem.SetStartPoint(playerStartPos);
             _cameraFollowSystem.Initialize(player.transform);
-            _gamePlayProcessor.Initialize();
+            _gamePlayProcessor.Run();
             _inputStateProvider.SetEnabled(true);
+
+            _uiService.ShowWindow(ViewType.Hud);
         }
 
         public void RestartGame()
         {
+            ResetPlayerProgress();
             _mazeGenerator.GenerateMaze(_mazeData);
             _mazeRenderer.RenderWalls();
+            _gamePlayProcessor.Reset();
+            _inputStateProvider.SetEnabled(true);
+
             Vector2Int playerStartPos = _mazeGenerator.GetCentralPosition();
-            var player = _playerFactory.GetPlayerView();
+            GameObject player = _playerFactory.GetPlayerView();
 
             if (player == null)
             {
@@ -77,11 +96,22 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
             _movementSystem.SetTargetTransform(player.transform);
             _movementSystem.SetStartPoint(playerStartPos);
+            player.transform.localPosition = new Vector2(playerStartPos.x, playerStartPos.y);
+
+            _uiService.HideWindow(ViewType.GameOver);
         }
 
         public void EndGame()
         {
-            _inputStateProvider.SetEnabled(false);
+            _uiService.ShowWindow(ViewType.MainMenu);
+            _uiService.HideWindow(ViewType.Hud);
+            _uiService.HideWindow(ViewType.GameOver);
+            _cameraFollowSystem.Disable();
+            _gamePlayProcessor.Stop();
+
+            _mazeFactory.ReleaseResources();
+            _playerFactory.ReleaseResources();
+            _playerFactory.DestroyPlayerView();
         }
 
         private void ShiftMazeSpawnPoint(MazeData mazeData)
@@ -90,6 +120,20 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             float offsetY = -(mazeData.Height * mazeData.CellSize) / 2f;
 
             _monoBehavioursProvider.MazeSpawnPoint.transform.localPosition = new Vector2(offsetX, offsetY);
+        }
+
+        private void SetGameRuntimeData(MazeData mazeData)
+        {
+            int seed = 1;
+            PlayerProgressData playerProgressData = new PlayerProgressData();
+            var gameRuntimeData = new GameProgressData(seed, playerProgressData, mazeData);
+            _gameRuntimeData.SetData(gameRuntimeData);
+        }
+
+        private void ResetPlayerProgress()
+        {
+            _gameRuntimeData.SetStepsCount(0);
+            _gameRuntimeData.SetSessionTime(0);
         }
     }
 }

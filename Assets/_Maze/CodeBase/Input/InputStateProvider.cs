@@ -15,6 +15,7 @@ namespace _Maze.CodeBase.Input
             if (isEnabled)
             {
                 _inputActions.Enable();
+                _inputActions.Player.SetCallbacks(this);
             }
             else
             {

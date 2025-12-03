@@ -1,7 +1,6 @@
-using _Maze.CodeBase.Data;
-using _Maze.CodeBase.GamePlay.GameSession;
-using _Maze.CodeBase.GamePlay.Maze;
-using _Maze.CodeBase.Input;
+using System.Collections.Generic;
+using System.Linq;
+using _Maze.CodeBase.UI;
 using UnityEngine;
 using VContainer;
 
@@ -9,43 +8,24 @@ namespace _Maze.CodeBase.Infrastructure
 {
     public class EntryPoint : MonoBehaviour
     {
-        public float CellSize;
-        public int Width;
-        public int Height;
-        public int ExistsCount;
+        private IUIService _uiService;
+        private IUIViewsFactory _uiViewsFactory;
+        private IEnumerable<IViewController> _viewControllers;
 
-        private IInputStateProvider _inputStateProvider;
-        private IGameSessionRunner _gameSessionRunner;
-        //
-        // [Inject]
-        // public void Inject(IGameSessionRunner gameSessionRunner, IInputStateProvider inputStateProvider)
-        // {
-        //     _inputStateProvider = inputStateProvider;
-        //     _gameSessionRunner = gameSessionRunner;
-        // }
-        //
         [Inject]
-        public void Inject(IGameSessionRunner gameSessionRunner, IInputStateProvider inputStateProvider)
+        public void Inject(IUIService uiService, IUIViewsFactory uiViewsFactory,
+            IEnumerable<IViewController> viewControllers)
         {
-            _inputStateProvider = inputStateProvider;
-            _gameSessionRunner = gameSessionRunner;
+            _viewControllers = viewControllers;
+            _uiViewsFactory = uiViewsFactory;
+            _uiService = uiService;
         }
 
-        private void Start()
+        private async void Start()
         {
-        }
-
-        private void Update()
-        {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                _gameSessionRunner.StartGame(new MazeData(Width, Height, CellSize, ExistsCount));
-            }
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                _gameSessionRunner.RestartGame();
-            }
+            await _uiViewsFactory.LoadViews();
+            _uiService.Initialize(_viewControllers.ToArray());
+            _uiService.ShowWindow(ViewType.MainMenu);
         }
     }
 }

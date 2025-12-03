@@ -1,6 +1,7 @@
 ﻿using _Maze.CodeBase.Data;
 using _Maze.CodeBase.GamePlay.GameSession;
 using _Maze.CodeBase.Progress;
+using UnityEngine;
 
 namespace _Maze.CodeBase.UI.MainMenu
 {
@@ -14,14 +15,17 @@ namespace _Maze.CodeBase.UI.MainMenu
         private readonly IUIViewsFactory _viewsFactory;
         private readonly IGameSessionRunner _gameSessionRunner;
         private readonly ISaveLoadService _saveLoadService;
+        private readonly IUIService _uiService;
 
         public MainMenuUIController(IUIViewsFactory viewsFactory,
             IGameSessionRunner gameSessionRunner,
-            ISaveLoadService saveLoadService)
+            ISaveLoadService saveLoadService,
+            IUIService uiService)
         {
             _viewsFactory = viewsFactory;
             _gameSessionRunner = gameSessionRunner;
             _saveLoadService = saveLoadService;
+            _uiService = uiService;
         }
 
         public override ViewType ViewType => ViewType.MainMenu;
@@ -40,6 +44,10 @@ namespace _Maze.CodeBase.UI.MainMenu
                 View = _viewsFactory.CreateView<MainMenuView>(ViewType.MainMenu);
                 View.Initialize(_callbacks);
             }
+
+            View.UpdateExistsCountText(_data.ExitsCount);
+            View.UpdateMazeWidthText(_data.Height);
+            View.UpdateMazeHeightText(_data.Height);
 
             SetLoadGameButtonEnabled();
         }
@@ -85,6 +93,7 @@ namespace _Maze.CodeBase.UI.MainMenu
         private void StartGame()
         {
             _gameSessionRunner.StartGame(_data);
+            _uiService.HideWindow(ViewType);
         }
 
         private void LoadGame()
@@ -96,24 +105,26 @@ namespace _Maze.CodeBase.UI.MainMenu
                 //TODO: replace parameter later
                 _gameSessionRunner.StartGame(data.MazeData);
             }
+
+            _uiService.HideWindow(ViewType);
         }
 
         private void SetExistsCount(int existsCount)
         {
-            View.UpdateExistsCountText(existsCount);
-            _data.ExitsCount = existsCount;
+            _data.ExitsCount += existsCount;
+            View.UpdateExistsCountText(_data.ExitsCount);
         }
 
         private void SetMazeWidth(int mazeWidth)
         {
-            View.UpdateMazeWidthText(mazeWidth);
-            _data.Width = mazeWidth;
+            _data.Width += mazeWidth;
+            View.UpdateMazeWidthText(_data.Width);
         }
 
         private void SetMazeHeight(int mazeHeight)
         {
-            View.UpdateMazeHeightText(mazeHeight);
-            _data.Height = mazeHeight;
+            _data.Height += mazeHeight;
+            View.UpdateMazeHeightText(_data.Height);
         }
 
         private void SetLoadGameButtonEnabled()

@@ -2,10 +2,11 @@ using System;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.Input;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.Player
 {
-    public class PlayerMovementSystem : IPlayerMovementSystem
+    public class PlayerMovementSystem : IPlayerMovementSystem, ITickable
     {
         public event Action<Vector2Int> OnMove;
 
@@ -24,16 +25,6 @@ namespace _Maze.CodeBase.GamePlay.Player
             _mazeGenerator = mazeGenerator;
         }
 
-        public void Initialize()
-        {
-            _inputStateProvider.OnPlayerMovement += OnPlayerMoved;
-        }
-
-        public void Dispose()
-        {
-            _inputStateProvider.OnPlayerMovement -= OnPlayerMoved;
-        }
-
         public void SetTargetTransform(Transform playerTransform)
         {
             _playerTransform = playerTransform;
@@ -44,8 +35,9 @@ namespace _Maze.CodeBase.GamePlay.Player
             _currentPosition = position;
         }
 
-        private void OnPlayerMoved(Vector2 direction)
+        public void Tick()
         {
+
             if (_playerTransform != null)
             {
                 _moveTimer -= Time.deltaTime;
@@ -55,7 +47,8 @@ namespace _Maze.CodeBase.GamePlay.Player
                     return;
                 }
 
-                Vector2Int transformedPos = new Vector2Int((int)direction.x, (int)direction.y);
+                Vector2 pos = _inputStateProvider.GetMovementDirection();
+                Vector2Int transformedPos = new Vector2Int((int) pos.x, (int) pos.y);
                 MoveTo(transformedPos);
             }
         }
@@ -68,7 +61,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         private void MoveTo(Vector2Int direction)
         {
-            if (direction != Vector2Int.zero) ;
+            if (direction != Vector2Int.zero)
             {
                 if (!_mazeGenerator.IsWallInFront(_currentPosition, direction))
                 {

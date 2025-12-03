@@ -6,6 +6,8 @@ namespace _Maze.CodeBase.Data
     public class PlayerProgressData
     {
         public int StepsCount;
-        public TimeSpan SessionTime;
+        public float SessionTime;
+        public int PositionX;
+        public int PositionY;
     }
 }

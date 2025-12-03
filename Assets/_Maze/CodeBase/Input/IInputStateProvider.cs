@@ -9,5 +9,6 @@ namespace _Maze.CodeBase.Input
         void SetEnabled(bool isEnabled);
         public event Action<Vector2> OnPlayerMovement;
         public event Action OnPaused;
+        Vector2 GetMovementDirection();
     }
 }

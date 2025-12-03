@@ -17,7 +17,7 @@ namespace _Maze.CodeBase.Progress
         {
             //TODO:serialize newtonsoft json
             string dataJson  = PlayerPrefs.GetString(SavedGame);
-            return new GameProgressData();
+            return new GameProgressData(1, null, null);
         }
 
         public bool SaveExists()

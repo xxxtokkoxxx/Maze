@@ -4,7 +4,7 @@ using _Maze.CodeBase.UI;
 
 namespace _Maze.CodeBase.GamePlay.Pause
 {
-    public class GamePauseProcessorProcessor : IGamePauseProcessor
+    public class GamePauseProcessor : IGamePauseProcessor
     {
         private bool _isPaused;
         private List<IPauseable> _pauseables = new();
@@ -12,7 +12,7 @@ namespace _Maze.CodeBase.GamePlay.Pause
         private readonly IInputStateProvider _inputStateProvider;
         private readonly IUIService _uiService;
 
-        public GamePauseProcessorProcessor(IInputStateProvider inputStateProvider, IUIService uiService)
+        public GamePauseProcessor(IInputStateProvider inputStateProvider, IUIService uiService)
         {
             _inputStateProvider = inputStateProvider;
             _uiService = uiService;

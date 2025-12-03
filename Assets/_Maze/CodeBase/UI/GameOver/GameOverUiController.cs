@@ -1,4 +1,5 @@
 ﻿using _Maze.CodeBase.GamePlay.GameSession;
+using _Maze.CodeBase.Progress;
 
 namespace _Maze.CodeBase.UI.GameOver
 {
@@ -8,15 +9,18 @@ namespace _Maze.CodeBase.UI.GameOver
         private GameOverUICallbacks _callbacks;
 
         private readonly IGameSessionRunner _gameSessionRunner;
+        private readonly IGameRuntimeData _gameRuntimeData;
         private readonly IUIViewsFactory _viewsFactory;
 
         public override ViewType ViewType => ViewType.GameOver;
 
          public GameOverUiController(IUIViewsFactory viewsFactory,
-            IGameSessionRunner gameSessionRunner)
+            IGameSessionRunner gameSessionRunner,
+            IGameRuntimeData gameRuntimeData)
         {
             _viewsFactory = viewsFactory;
             _gameSessionRunner = gameSessionRunner;
+            _gameRuntimeData = gameRuntimeData;
         }
 
         public override void Show()
@@ -28,6 +32,8 @@ namespace _Maze.CodeBase.UI.GameOver
                 View = _viewsFactory.CreateView<GameOverView>(ViewType.GameOver);
                 View.Initialize(_callbacks);
             }
+
+            View.SetGameResultsText(_gameRuntimeData.GetSessionTime(), _gameRuntimeData.GetPlayerStepsCount());
         }
 
         public override void Hide()

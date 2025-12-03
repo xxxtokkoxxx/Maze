@@ -5,8 +5,6 @@ namespace _Maze.CodeBase.UI.MainMenu
 {
     public class MainMenuView : BaseView
     {
-        [SerializeField] private GameObject _searchingSessionPanel;
-        [SerializeField] private GameObject _mainMenuPanel;
         [SerializeField] private GameObject _loadButton;
 
         [SerializeField] private TextMeshProUGUI _mazeHeightText;

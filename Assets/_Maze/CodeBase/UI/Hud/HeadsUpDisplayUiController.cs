@@ -17,8 +17,11 @@ namespace _Maze.CodeBase.UI.Hud
         {
             if (View == null)
             {
-                View = _viewsFactory.CreateView<HeadsUpDisplayView>(ViewType.MainMenu);
+                View = _viewsFactory.CreateView<HeadsUpDisplayView>(ViewType.Hud);
             }
+
+            UpdateStepsCount(0);
+            UpdateTimer(0,0);
         }
 
         public override void Hide()
@@ -31,9 +34,9 @@ namespace _Maze.CodeBase.UI.Hud
             View.SetStepsCount(stepsCount);
         }
 
-        public void UpdateTimer(TimeSpan timeSpan)
+        public void UpdateTimer(int minutes, int seconds)
         {
-            View.SetSessionTime(timeSpan);
+            View.SetSessionTime(minutes, seconds);
         }
     }
 }
