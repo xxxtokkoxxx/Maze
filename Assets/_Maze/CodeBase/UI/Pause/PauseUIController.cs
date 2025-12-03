@@ -13,6 +13,7 @@ namespace _Maze.CodeBase.UI.Pause
         private readonly ISaveLoadService _saveLoadService;
         private readonly IGamePauseProcessor _gamePauseProcessor;
         private readonly IUIService _uiService;
+        private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IUIViewsFactory _viewsFactory;
 
         public override ViewType ViewType => ViewType.Pause;
@@ -21,13 +22,15 @@ namespace _Maze.CodeBase.UI.Pause
             IGameSessionRunner gameSessionRunner,
             ISaveLoadService saveLoadService,
             IGamePauseProcessor gamePauseProcessor,
-            IUIService uiService)
+            IUIService uiService,
+            IGameRuntimeDataContainer gameRuntimeDataContainer)
         {
             _viewsFactory = viewsFactory;
             _gameSessionRunner = gameSessionRunner;
             _saveLoadService = saveLoadService;
             _gamePauseProcessor = gamePauseProcessor;
             _uiService = uiService;
+            _gameRuntimeDataContainer = gameRuntimeDataContainer;
         }
 
         public override void Show()
@@ -79,7 +82,7 @@ namespace _Maze.CodeBase.UI.Pause
 
         private void SaveGame()
         {
-            _saveLoadService.SaveGame(null);
+            _saveLoadService.SaveGame(_gameRuntimeDataContainer.GetGameProgressData());
         }
 
         private void ResumeGame()

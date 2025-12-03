@@ -1,23 +1,25 @@
 ﻿using _Maze.CodeBase.Data;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace _Maze.CodeBase.Progress
 {
     public class SaveLoadService : ISaveLoadService
     {
-        public const string SavedGame = "SavedGame";
+        private const string SavedGame = "SavedGame";
 
         public void SaveGame(GameProgressData gameProgressData)
         {
-            //TODO:serialize newtonsoft json
-            PlayerPrefs.SetString(SavedGame, SavedGame);
+            string data = JsonConvert.SerializeObject(gameProgressData);
+            PlayerPrefs.SetString(SavedGame, data);
         }
 
         public GameProgressData LoadGame()
         {
-            //TODO:serialize newtonsoft json
-            string dataJson  = PlayerPrefs.GetString(SavedGame);
-            return new GameProgressData(1, null, null);
+            string dataJson = PlayerPrefs.GetString(SavedGame);
+            GameProgressData data = JsonConvert.DeserializeObject<GameProgressData>(dataJson);
+
+            return data;
         }
 
         public bool SaveExists()

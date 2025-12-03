@@ -41,7 +41,7 @@ namespace _Maze.CodeBase.Infrastructure
             builder.Register<IViewController, GameOverUiController>(Lifetime.Singleton);
             builder.Register<IViewController, PauseUIController>(Lifetime.Singleton);
             builder.Register<IViewController, IHeadsUpDisplay, HeadsUpDisplayUiController>(Lifetime.Singleton);
-            builder.Register<IGameRuntimeData, GameRuntimeDataContainer>(Lifetime.Singleton);
+            builder.Register<IGameRuntimeDataContainer, GameRuntimeDataContainerContainer>(Lifetime.Singleton);
 
             builder.RegisterComponent(_monoBehavioursProvider).AsImplementedInterfaces();
         }

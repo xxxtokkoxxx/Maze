@@ -1,9 +1,9 @@
-using System;
 using _Maze.CodeBase.Data;
+using UnityEngine;
 
 namespace _Maze.CodeBase.Progress
 {
-    public interface IGameRuntimeData
+    public interface IGameRuntimeDataContainer
     {
         void SetData(GameProgressData gameProgressData);
         int AddPlayerStepsCount(int playerStepsCount);
@@ -13,5 +13,7 @@ namespace _Maze.CodeBase.Progress
         void SetMazeData(MazeData mazeData);
         public float GetSessionTime();
         public int GetPlayerStepsCount();
+        GameProgressData GetGameProgressData();
+        void SetPlayerPosition(Vector2Int currentPosition);
     }
 }

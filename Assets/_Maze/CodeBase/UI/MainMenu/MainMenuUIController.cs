@@ -1,7 +1,7 @@
 ﻿using _Maze.CodeBase.Data;
 using _Maze.CodeBase.GamePlay.GameSession;
+using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.Progress;
-using UnityEngine;
 
 namespace _Maze.CodeBase.UI.MainMenu
 {
@@ -10,31 +10,34 @@ namespace _Maze.CodeBase.UI.MainMenu
         private bool _subscribed;
 
         private MainMenuCallbacks _callbacks;
-        private MazeData _data;
+        private MazeData _mazeData;
 
         private readonly IUIViewsFactory _viewsFactory;
         private readonly IGameSessionRunner _gameSessionRunner;
         private readonly ISaveLoadService _saveLoadService;
         private readonly IUIService _uiService;
+        private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
 
         public MainMenuUIController(IUIViewsFactory viewsFactory,
             IGameSessionRunner gameSessionRunner,
             ISaveLoadService saveLoadService,
-            IUIService uiService)
+            IUIService uiService,
+            IGameRuntimeDataContainer gameRuntimeDataContainer)
         {
             _viewsFactory = viewsFactory;
             _gameSessionRunner = gameSessionRunner;
             _saveLoadService = saveLoadService;
             _uiService = uiService;
+            _gameRuntimeDataContainer = gameRuntimeDataContainer;
         }
 
         public override ViewType ViewType => ViewType.MainMenu;
 
         public override void Show()
         {
-            if (_data == null)
+            if (_mazeData == null)
             {
-                _data = new MazeData(10, 10, 1, 1);
+                _mazeData = new MazeData(10, 10, 1, 1);
             }
 
             Subscribe();
@@ -45,9 +48,9 @@ namespace _Maze.CodeBase.UI.MainMenu
                 View.Initialize(_callbacks);
             }
 
-            View.UpdateExistsCountText(_data.ExitsCount);
-            View.UpdateMazeWidthText(_data.Height);
-            View.UpdateMazeHeightText(_data.Height);
+            View.UpdateExistsCountText(_mazeData.ExitsCount);
+            View.UpdateMazeWidthText(_mazeData.Height);
+            View.UpdateMazeHeightText(_mazeData.Height);
 
             SetLoadGameButtonEnabled();
         }
@@ -92,18 +95,22 @@ namespace _Maze.CodeBase.UI.MainMenu
 
         private void StartGame()
         {
-            _gameSessionRunner.StartGame(_data);
+            GameProgressData data = GetGameProgressData();
+            _gameRuntimeDataContainer.SetData(data);
+            data.MazeData.Seed = SeedGenerator.GenerateSeed();
+
+            _gameSessionRunner.StartGame(data);
             _uiService.HideWindow(ViewType);
         }
 
         private void LoadGame()
         {
             GameProgressData data = _saveLoadService.LoadGame();
+            _gameRuntimeDataContainer.SetData(data);
 
             if (data != null)
             {
-                //TODO: replace parameter later
-                _gameSessionRunner.StartGame(data.MazeData);
+                _gameSessionRunner.StartGame(data, true);
             }
 
             _uiService.HideWindow(ViewType);
@@ -111,26 +118,32 @@ namespace _Maze.CodeBase.UI.MainMenu
 
         private void SetExistsCount(int existsCount)
         {
-            _data.ExitsCount += existsCount;
-            View.UpdateExistsCountText(_data.ExitsCount);
+            _mazeData.ExitsCount += existsCount;
+            View.UpdateExistsCountText(_mazeData.ExitsCount);
         }
 
         private void SetMazeWidth(int mazeWidth)
         {
-            _data.Width += mazeWidth;
-            View.UpdateMazeWidthText(_data.Width);
+            _mazeData.Width += mazeWidth;
+            View.UpdateMazeWidthText(_mazeData.Width);
         }
 
         private void SetMazeHeight(int mazeHeight)
         {
-            _data.Height += mazeHeight;
-            View.UpdateMazeHeightText(_data.Height);
+            _mazeData.Height += mazeHeight;
+            View.UpdateMazeHeightText(_mazeData.Height);
         }
 
         private void SetLoadGameButtonEnabled()
         {
             bool isEnabled = _saveLoadService.SaveExists();
             View.SetLoadButtonEnabled(isEnabled);
+        }
+
+        private GameProgressData GetGameProgressData()
+        {
+            GameProgressData data = new GameProgressData(1, new PlayerProgressData(), _mazeData);
+            return data;
         }
     }
 }

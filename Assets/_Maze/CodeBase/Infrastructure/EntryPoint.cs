@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _Maze.CodeBase.UI;
@@ -26,6 +27,14 @@ namespace _Maze.CodeBase.Infrastructure
             await _uiViewsFactory.LoadViews();
             _uiService.Initialize(_viewControllers.ToArray());
             _uiService.ShowWindow(ViewType.MainMenu);
+        }
+
+        private void Update()
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                PlayerPrefs.DeleteAll();
+            }
         }
     }
 }
