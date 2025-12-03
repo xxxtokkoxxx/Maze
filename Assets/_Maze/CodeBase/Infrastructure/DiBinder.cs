@@ -4,6 +4,7 @@ using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Infrastructure.ResourcesManagement;
 using _Maze.CodeBase.Input;
+using _Maze.CodeBase.UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -26,6 +27,8 @@ namespace _Maze.CodeBase.Infrastructure
             builder.Register<ICameraFollowSystem, ITickable, CameraFollowSystem>(Lifetime.Singleton);
             builder.Register<IGamePlayProcessor, GamePlayProcessor>(Lifetime.Singleton);
             builder.Register<IAssetsLoaderService, AssetsLoaderService>(Lifetime.Singleton);
+            builder.Register<IUIService, UIService>(Lifetime.Singleton);
+            builder.Register<IUIViewsFactory, UIViewsFactory>(Lifetime.Singleton);
 
             builder.RegisterComponent(_monoBehavioursProvider).AsImplementedInterfaces();
         }

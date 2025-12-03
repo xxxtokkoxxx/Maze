@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceLocations;
+using Object = UnityEngine.Object;
 
 namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
 {
@@ -38,6 +40,41 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
             return operationHandle.Result;
         }
 
+        public async Task<IList<TAssetType>> LoadAssets<TAssetType>(string label)
+        {
+            bool assetExist = TryToGetAssetFromCache(label, out IList<TAssetType> asset);
+            AsyncOperationHandle<IList<GameObject>> loadWithIResourceLocations;
+
+            if (assetExist)
+            {
+                return asset;
+            }
+
+            try
+            {
+                IList<IResourceLocation> locations;
+                locations = await GetResourceLocations(label);
+
+                loadWithIResourceLocations = Addressables.LoadAssetsAsync<GameObject>(locations, obj => { });
+                await loadWithIResourceLocations.Task;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidDataException($"Failed to load asset: {label}", e);
+            }
+
+            IList<TAssetType> handle = new List<TAssetType>();
+            foreach (GameObject res in loadWithIResourceLocations.Result)
+            {
+                handle.Add(res.GetComponent<TAssetType>());
+            }
+
+            LoadedAsset cache = new LoadedAsset(label, loadWithIResourceLocations, handle);
+            _cache.Add(cache);
+
+            return handle;
+        }
+
         private bool TryToGetAssetFromCache<TAsset>(string key, out TAsset asset) where TAsset : class
         {
             asset = default;
@@ -51,7 +88,7 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
             asset = loadedAsset.LoadedObject as TAsset;
             return true;
         }
-        
+
         public void Release(string address)
         {
             LoadedAsset objectToRelease = _cache.FirstOrDefault(a => a.Address == address);
@@ -64,7 +101,7 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
             ReleaseInternal(objectToRelease.Handle);
             _cache.Remove(objectToRelease);
         }
-        
+
         private void ReleaseInternal(AsyncOperationHandle handle)
         {
             try
@@ -73,8 +110,39 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
             }
             catch (Exception e)
             {
-                throw new InvalidDataException($"Failed to load asset", e);
+                throw new InvalidDataException($"Failed to release asset ", e);
             }
+        }
+
+        private async Task<IList<IResourceLocation>> GetResourceLocations(string label)
+        {
+            AsyncOperationHandle<IList<IResourceLocation>> handle;
+
+            try
+            {
+                handle = Addressables.LoadResourceLocationsAsync(label, typeof(Object));
+                await handle.Task;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidDataException($"Failed to load asset: {label}", e);
+            }
+
+            IList<IResourceLocation> loadedLocations = handle.Result;
+            List<string> loadedKeys = new List<string>();
+            IList<IResourceLocation> loadedLocationsReturn = new List<IResourceLocation>();
+
+            foreach (IResourceLocation location in loadedLocations)
+            {
+                if (loadedKeys.Contains(location.PrimaryKey))
+                    continue;
+
+                loadedKeys.Add(location.PrimaryKey);
+                loadedLocationsReturn.Add(location);
+            }
+
+            _cache.Add(new LoadedAsset(AssetsDataPath.ResourceLocation + label, handle, loadedLocationsReturn));
+            return loadedLocationsReturn;
         }
     }
 }
