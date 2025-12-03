@@ -51,7 +51,20 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
             asset = loadedAsset.LoadedObject as TAsset;
             return true;
         }
+        
+        public void Release(string address)
+        {
+            LoadedAsset objectToRelease = _cache.FirstOrDefault(a => a.Address == address);
 
+            if (objectToRelease == null)
+            {
+                return;
+            }
+
+            ReleaseInternal(objectToRelease.Handle);
+            _cache.Remove(objectToRelease);
+        }
+        
         private void ReleaseInternal(AsyncOperationHandle handle)
         {
             try
