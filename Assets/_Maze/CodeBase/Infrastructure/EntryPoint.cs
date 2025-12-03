@@ -33,7 +33,6 @@ namespace _Maze.CodeBase.Infrastructure
 
         private void Start()
         {
-            _inputStateProvider.Initialize();
         }
 
         private void Update()

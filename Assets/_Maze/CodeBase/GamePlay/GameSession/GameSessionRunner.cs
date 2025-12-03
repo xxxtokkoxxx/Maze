@@ -3,6 +3,7 @@ using _Maze.CodeBase.GamePlay.Camera;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Infrastructure;
+using _Maze.CodeBase.Input;
 using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.GameSession
@@ -19,6 +20,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly ICameraFollowSystem _cameraFollowSystem;
         private readonly IGamePlayProcessor _gamePlayProcessor;
         private readonly IMonoBehavioursProvider _monoBehavioursProvider;
+        private readonly IInputStateProvider _inputStateProvider;
 
         public GameSessionRunner(IMazeRenderer mazeRenderer,
             IMazeGenerator mazeGenerator,
@@ -27,7 +29,8 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             IPlayerMovementSystem movementSystem,
             ICameraFollowSystem cameraFollowSystem,
             IGamePlayProcessor gamePlayProcessor,
-            IMonoBehavioursProvider monoBehavioursProvider)
+            IMonoBehavioursProvider monoBehavioursProvider,
+            IInputStateProvider inputStateProvider)
         {
             _mazeRenderer = mazeRenderer;
             _mazeGenerator = mazeGenerator;
@@ -37,6 +40,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _cameraFollowSystem = cameraFollowSystem;
             _gamePlayProcessor = gamePlayProcessor;
             _monoBehavioursProvider = monoBehavioursProvider;
+            _inputStateProvider = inputStateProvider;
         }
 
         public async void StartGame(MazeData mazeData)
@@ -55,6 +59,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _movementSystem.SetStartPoint(playerStartPos);
             _cameraFollowSystem.Initialize(player.transform);
             _gamePlayProcessor.Initialize();
+            _inputStateProvider.SetEnabled(true);
         }
 
         public void RestartGame()
@@ -76,6 +81,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         public void EndGame()
         {
+            _inputStateProvider.SetEnabled(false);
         }
 
         private void ShiftMazeSpawnPoint(MazeData mazeData)

@@ -2,11 +2,10 @@ using System;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.Input;
 using UnityEngine;
-using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.Player
 {
-    public class PlayerMovementSystem : IPlayerMovementSystem, ITickable
+    public class PlayerMovementSystem : IPlayerMovementSystem
     {
         public event Action<Vector2Int> OnMove;
 
@@ -25,6 +24,16 @@ namespace _Maze.CodeBase.GamePlay.Player
             _mazeGenerator = mazeGenerator;
         }
 
+        public void Initialize()
+        {
+            _inputStateProvider.OnPlayerMovement += OnPlayerMoved;
+        }
+
+        public void Dispose()
+        {
+            _inputStateProvider.OnPlayerMovement -= OnPlayerMoved;
+        }
+
         public void SetTargetTransform(Transform playerTransform)
         {
             _playerTransform = playerTransform;
@@ -35,7 +44,7 @@ namespace _Maze.CodeBase.GamePlay.Player
             _currentPosition = position;
         }
 
-        public void Tick()
+        private void OnPlayerMoved(Vector2 direction)
         {
             if (_playerTransform != null)
             {
@@ -46,8 +55,7 @@ namespace _Maze.CodeBase.GamePlay.Player
                     return;
                 }
 
-                Vector2 pos = _inputStateProvider.GetMovementDirection();
-                Vector2Int transformedPos = new Vector2Int((int)pos.x, (int)pos.y);
+                Vector2Int transformedPos = new Vector2Int((int)direction.x, (int)direction.y);
                 MoveTo(transformedPos);
             }
         }

@@ -1,11 +1,13 @@
 
+using System;
 using UnityEngine;
 
 namespace _Maze.CodeBase.Input
 {
     public interface IInputStateProvider
     {
-        void Initialize();
-        Vector2 GetMovementDirection();
+        void SetEnabled(bool isEnabled);
+        public event Action<Vector2> OnPlayerMovement;
+        public event Action OnPaused;
     }
 }
