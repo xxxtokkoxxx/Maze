@@ -1,32 +1,25 @@
-﻿using System.Threading;
-using _Maze.CodeBase.Data;
+﻿using _Maze.CodeBase.Data;
 using _Maze.CodeBase.GamePlay.GameSession;
-using _Maze.CodeBase.GamePlay.Maze;
-using _Maze.CodeBase.Infrastructure;
 using _Maze.CodeBase.Progress;
 
 namespace _Maze.CodeBase.UI.MainMenu
 {
-    public class MainMenuController : BaseUiController<MainMenuView>, IViewController
+    public class MainMenuUIController : BaseUiController<MainMenuView>, IViewController
     {
         private bool _subscribed;
 
         private MainMenuCallbacks _callbacks;
-        private CancellationTokenSource _cancellationToken = new();
         private MazeData _data;
 
         private readonly IUIViewsFactory _viewsFactory;
-        private readonly IMonoBehavioursProvider _monoBehaviourProvider;
         private readonly IGameSessionRunner _gameSessionRunner;
         private readonly ISaveLoadService _saveLoadService;
 
-        public MainMenuController(IUIViewsFactory viewsFactory,
-            IMonoBehavioursProvider monoBehaviourProvider,
+        public MainMenuUIController(IUIViewsFactory viewsFactory,
             IGameSessionRunner gameSessionRunner,
             ISaveLoadService saveLoadService)
         {
             _viewsFactory = viewsFactory;
-            _monoBehaviourProvider = monoBehaviourProvider;
             _gameSessionRunner = gameSessionRunner;
             _saveLoadService = saveLoadService;
         }
