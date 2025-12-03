@@ -17,5 +17,6 @@ namespace _Maze.CodeBase.Data
         public int Height { get; set; }
         public float CellSize { get; set; }
         public int ExitsCount { get; set; }
+        public int Seed { get; set; }
     }
 }

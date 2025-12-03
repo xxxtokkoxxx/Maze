@@ -29,6 +29,8 @@ namespace _Maze.CodeBase.GamePlay.Maze
         public void GenerateMaze(MazeData mazeData)
         {
             _mazeData = mazeData;
+            Random.InitState(_mazeData.Seed);
+
             int width = _mazeData.Width;
             int height = _mazeData.Height;
 

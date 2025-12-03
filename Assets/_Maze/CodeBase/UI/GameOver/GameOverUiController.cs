@@ -9,7 +9,7 @@ namespace _Maze.CodeBase.UI.GameOver
         private GameOverUICallbacks _callbacks;
 
         private readonly IGameSessionRunner _gameSessionRunner;
-        private readonly IGameRuntimeData _gameRuntimeData;
+        private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IUIService _uiService;
         private readonly IUIViewsFactory _viewsFactory;
 
@@ -17,12 +17,12 @@ namespace _Maze.CodeBase.UI.GameOver
 
          public GameOverUiController(IUIViewsFactory viewsFactory,
             IGameSessionRunner gameSessionRunner,
-            IGameRuntimeData gameRuntimeData,
+            IGameRuntimeDataContainer gameRuntimeDataContainer,
             IUIService uiService)
         {
             _viewsFactory = viewsFactory;
             _gameSessionRunner = gameSessionRunner;
-            _gameRuntimeData = gameRuntimeData;
+            _gameRuntimeDataContainer = gameRuntimeDataContainer;
             _uiService = uiService;
         }
 
@@ -36,7 +36,7 @@ namespace _Maze.CodeBase.UI.GameOver
                 View.Initialize(_callbacks);
             }
 
-            View.SetGameResultsText(_gameRuntimeData.GetSessionTime(), _gameRuntimeData.GetPlayerStepsCount());
+            View.SetGameResultsText(_gameRuntimeDataContainer.GetSessionTime(), _gameRuntimeDataContainer.GetPlayerStepsCount());
         }
 
         public override void Hide()

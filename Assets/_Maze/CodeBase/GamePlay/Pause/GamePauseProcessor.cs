@@ -76,7 +76,6 @@ namespace _Maze.CodeBase.GamePlay.Pause
 
         private void ShowPauseMenu(bool isPaused)
         {
-            Debug.Log(isPaused);
             if (isPaused)
             {
                 _uiService.ShowWindow(ViewType.Pause);

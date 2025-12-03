@@ -9,6 +9,7 @@ namespace _Maze.CodeBase.GamePlay.Player
         public void Dispose();
         event Action<Vector2Int> OnMove;
         void SetTargetTransform(Transform playerTransform);
+
         void SetStartPoint(Vector2Int position);
     }
 }

@@ -13,8 +13,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 {
     public class GameSessionRunner : IGameSessionRunner
     {
-        private MazeData _mazeData;
-
         private readonly IMazeRenderer _mazeRenderer;
         private readonly IMazeGenerator _mazeGenerator;
         private readonly IPlayerFactory _playerFactory;
@@ -26,7 +24,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IInputStateProvider _inputStateProvider;
         private readonly IUIService _uiService;
         private readonly IPlayerMovementSystem _playerMovementSystem;
-        private readonly IGameRuntimeData _gameRuntimeData;
+        private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IGamePauseProcessor _gamePauseProcessor;
 
         public GameSessionRunner(IMazeRenderer mazeRenderer,
@@ -40,7 +38,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             IInputStateProvider inputStateProvider,
             IUIService uiService,
             IPlayerMovementSystem playerMovementSystem,
-            IGameRuntimeData gameRuntimeData,
+            IGameRuntimeDataContainer gameRuntimeDataContainer,
             IGamePauseProcessor gamePauseProcessor)
         {
             _mazeRenderer = mazeRenderer;
@@ -54,28 +52,31 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _inputStateProvider = inputStateProvider;
             _uiService = uiService;
             _playerMovementSystem = playerMovementSystem;
-            _gameRuntimeData = gameRuntimeData;
+            _gameRuntimeDataContainer = gameRuntimeDataContainer;
             _gamePauseProcessor = gamePauseProcessor;
         }
 
-        public async void StartGame(MazeData mazeData)
+        public async void StartGame(GameProgressData data, bool loadGameProgressData = false)
         {
-            _mazeData = mazeData;
-
             await _mazeFactory.LoadReferences();
             await _playerFactory.LoadPlayerReference();
+
             _gamePauseProcessor.Initialize();
             _playerMovementSystem.Initialize();
 
-            SetGameRuntimeData(mazeData);
-            ShiftMazeSpawnPoint(mazeData);
+            ShiftMazeSpawnPoint(data.MazeData);
+            _mazeGenerator.GenerateMaze(data.MazeData);
 
-            _mazeGenerator.GenerateMaze(mazeData);
             _mazeRenderer.RenderWalls();
-            Vector2Int playerStartPos = _mazeGenerator.GetCentralPosition();
-            GameObject player = _playerFactory.CreatePlayer(playerStartPos, _monoBehavioursProvider.MazeSpawnPoint);
+
+            Vector2Int playerPos = loadGameProgressData
+                ? new Vector2Int(data.PlayerProgress.PositionX, data.PlayerProgress.PositionY)
+                : _mazeGenerator.GetCentralPosition();
+
+            GameObject player = _playerFactory.CreatePlayer(playerPos, _monoBehavioursProvider.MazeSpawnPoint);
+
             _movementSystem.SetTargetTransform(player.transform);
-            _movementSystem.SetStartPoint(playerStartPos);
+            _movementSystem.SetStartPoint(playerPos);
             _cameraFollowSystem.Initialize(player.transform);
             _gamePlayProcessor.Run();
             _inputStateProvider.SetEnabled(true);
@@ -84,7 +85,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         public void RestartGame()
         {
             ResetPlayerProgress();
-            _mazeGenerator.GenerateMaze(_mazeData);
+            _mazeGenerator.GenerateMaze(_gameRuntimeDataContainer.GetGameProgressData().MazeData);
             _mazeRenderer.RenderWalls();
             _gamePlayProcessor.Reset();
             _inputStateProvider.SetEnabled(true);
@@ -124,18 +125,11 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _monoBehavioursProvider.MazeSpawnPoint.transform.localPosition = new Vector2(offsetX, offsetY);
         }
 
-        private void SetGameRuntimeData(MazeData mazeData)
-        {
-            int seed = 1;
-            PlayerProgressData playerProgressData = new PlayerProgressData();
-            var gameRuntimeData = new GameProgressData(seed, playerProgressData, mazeData);
-            _gameRuntimeData.SetData(gameRuntimeData);
-        }
-
         private void ResetPlayerProgress()
         {
-            _gameRuntimeData.SetStepsCount(0);
-            _gameRuntimeData.SetSessionTime(0);
+            _gameRuntimeDataContainer.SetStepsCount(0);
+            _gameRuntimeDataContainer.SetSessionTime(0);
+            _gameRuntimeDataContainer.SetSeed(SeedGenerator.GenerateSeed());
         }
     }
 }

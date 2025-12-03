@@ -20,7 +20,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IMazeGenerator _mazeGenerator;
         private readonly IInputStateProvider _inputStateProvider;
         private readonly IUIService _uiService;
-        private readonly IGameRuntimeData _gameRuntimeData;
+        private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IHeadsUpDisplay _headsUpDisplay;
         private readonly IGamePauseProcessor _pauseProcessor;
 
@@ -28,7 +28,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             IMazeGenerator mazeGenerator,
             IInputStateProvider inputStateProvider,
             IUIService uiService,
-            IGameRuntimeData gameRuntimeData,
+            IGameRuntimeDataContainer gameRuntimeDataContainer,
             IHeadsUpDisplay headsUpDisplay,
             IGamePauseProcessor pauseProcessor)
         {
@@ -36,7 +36,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _mazeGenerator = mazeGenerator;
             _inputStateProvider = inputStateProvider;
             _uiService = uiService;
-            _gameRuntimeData = gameRuntimeData;
+            _gameRuntimeDataContainer = gameRuntimeDataContainer;
             _headsUpDisplay = headsUpDisplay;
             _pauseProcessor = pauseProcessor;
         }
@@ -48,7 +48,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
             _uiService.ShowWindow(ViewType.Hud);
             _isEnabled = true;
-            _elapsedTime = _gameRuntimeData.GetSessionTime();
+            _elapsedTime = _gameRuntimeDataContainer.GetSessionTime();
             _pauseProcessor.AddPausable(this);
             _playerMovementSystem.OnMove += OnPlayerMoved;
         }
@@ -56,7 +56,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         public void Reset()
         {
             _elapsedTime = 0;
-            _headsUpDisplay.UpdateTimer(0, 0);
+            _headsUpDisplay.UpdateTimer(0);
             _headsUpDisplay.UpdateStepsCount(0);
         }
 
@@ -75,11 +75,8 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             }
 
             _elapsedTime += Time.deltaTime;
-
-            int minutes = Mathf.FloorToInt(_elapsedTime / 60f);
-            int seconds = Mathf.FloorToInt(_elapsedTime % 60f);
-
-            _headsUpDisplay.UpdateTimer(minutes, seconds);
+            _gameRuntimeDataContainer.SetSessionTime(_elapsedTime);
+            _headsUpDisplay.UpdateTimer(_elapsedTime);
         }
 
         public void SetPaused(bool isPaused)
@@ -89,17 +86,16 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         private void OnPlayerMoved(Vector2Int currentPosition)
         {
+            int stepsCount = _gameRuntimeDataContainer.AddPlayerStepsCount(_minimalPlayerStepCount);
+            _headsUpDisplay.UpdateStepsCount(stepsCount);
+            _gameRuntimeDataContainer.SetPlayerPosition(currentPosition);
+
             if (IsPlayerOutOfMaze(currentPosition))
             {
                 _inputStateProvider.SetEnabled(false);
-                _gameRuntimeData.SetSessionTime(_elapsedTime);
                 _uiService.ShowWindow(ViewType.GameOver);
+
                 _isEnabled = false;
-            }
-            else
-            {
-                int stepsCount = _gameRuntimeData.AddPlayerStepsCount(_minimalPlayerStepCount);
-                _headsUpDisplay.UpdateStepsCount(stepsCount);
             }
         }
 

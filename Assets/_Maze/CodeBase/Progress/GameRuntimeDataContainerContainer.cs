@@ -1,8 +1,9 @@
 ﻿using _Maze.CodeBase.Data;
+using UnityEngine;
 
 namespace _Maze.CodeBase.Progress
 {
-    public class GameRuntimeDataContainer : IGameRuntimeData
+    public class GameRuntimeDataContainerContainer : IGameRuntimeDataContainer
     {
         private GameProgressData _gameProgressData;
 
@@ -29,6 +30,7 @@ namespace _Maze.CodeBase.Progress
 
         public void SetSeed(int seed)
         {
+            _gameProgressData.MazeData.Seed = seed;
         }
 
         public void SetMazeData(MazeData mazeData)
@@ -44,6 +46,14 @@ namespace _Maze.CodeBase.Progress
         public int GetPlayerStepsCount()
         {
             return _gameProgressData.PlayerProgress.StepsCount;
+        }
+
+        public GameProgressData GetGameProgressData() => _gameProgressData;
+
+        public void SetPlayerPosition(Vector2Int currentPosition)
+        {
+            _gameProgressData.PlayerProgress.PositionX = currentPosition.x;
+            _gameProgressData.PlayerProgress.PositionY = currentPosition.y;
         }
     }
 }
