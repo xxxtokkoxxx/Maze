@@ -23,7 +23,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IHeadsUpDisplay _headsUpDisplay;
         private readonly IGamePauseProcessor _pauseProcessor;
-        private readonly IPlayerFactory _playerFactory;
 
         public GamePlayProcessor(IPlayerMovementSystem playerMovementSystem,
             IMazeGenerator mazeGenerator,
@@ -31,8 +30,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             IUIService uiService,
             IGameRuntimeDataContainer gameRuntimeDataContainer,
             IHeadsUpDisplay headsUpDisplay,
-            IGamePauseProcessor pauseProcessor,
-            IPlayerFactory playerFactory)
+            IGamePauseProcessor pauseProcessor)
         {
             _playerMovementSystem = playerMovementSystem;
             _mazeGenerator = mazeGenerator;
@@ -41,7 +39,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _gameRuntimeDataContainer = gameRuntimeDataContainer;
             _headsUpDisplay = headsUpDisplay;
             _pauseProcessor = pauseProcessor;
-            _playerFactory = playerFactory;
         }
 
         public void Run()
@@ -54,7 +51,8 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _elapsedTime = _gameRuntimeDataContainer.GetSessionTime();
             _pauseProcessor.AddPausable(this);
             _playerMovementSystem.OnMove += OnPlayerMoved;
-            _gameRuntimeDataContainer.SetPlayerPosition(_playerMovementSystem.GetStartPoint());
+            _gameRuntimeDataContainer.SetPlayerPosition(_playerMovementSystem.GetCurrentPositionPoint());
+            _inputStateProvider.SetEnabled(true);
         }
 
         public void Reset()
@@ -62,6 +60,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _elapsedTime = 0;
             _headsUpDisplay.UpdateTimer(0);
             _headsUpDisplay.UpdateStepsCount(0);
+            _inputStateProvider.SetEnabled(true);
         }
 
         public void Stop()

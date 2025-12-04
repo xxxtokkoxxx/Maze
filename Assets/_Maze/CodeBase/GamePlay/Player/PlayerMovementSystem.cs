@@ -67,7 +67,6 @@ namespace _Maze.CodeBase.GamePlay.Player
                 else
                 {
                     pos = _inputStateProvider.GetMovementDirection();
-                    ;
                 }
 
                 Vector2Int transformedPos = new Vector2Int((int) pos.x, (int) pos.y);
@@ -88,7 +87,7 @@ namespace _Maze.CodeBase.GamePlay.Player
             _isEnabled = !isPaused;
         }
 
-        public Vector2Int GetStartPoint()
+        public Vector2Int GetCurrentPositionPoint()
         {
             return _currentPosition;
         }
