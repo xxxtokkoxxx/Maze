@@ -45,10 +45,5 @@ namespace _Maze.CodeBase.GamePlay.Player
                 Object.Destroy(_playerView.gameObject);
             }
         }
-
-        public void ReleaseResources()
-        {
-            _assetsLoaderService.Release(AssetsDataPath.PlayerView);
-        }
     }
 }

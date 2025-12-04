@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 519420031}
-  _targetWorldWidth: 10
+  _targetWorldWidth: 9
 --- !u!1 &565112133
 GameObject:
   m_ObjectHideFlags: 0

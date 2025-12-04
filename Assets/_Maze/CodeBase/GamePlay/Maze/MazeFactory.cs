@@ -37,12 +37,6 @@ namespace _Maze.CodeBase.GamePlay.Maze
             return wall;
         }
 
-        public void ReleaseResources()
-        {
-            _assetsLoaderService.Release(AssetsDataPath.Wall);
-            _assetsLoaderService.Release(AssetsDataPath.FloorRenderer);
-        }
-
         public void DestroyMazeEnvironment()
         {
             foreach (GameObject wall in _createdWalls)

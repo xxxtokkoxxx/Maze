@@ -9,6 +9,5 @@ namespace _Maze.CodeBase.GamePlay.Player
         PlayerView CreatePlayer(Vector2 position, Transform parent);
         PlayerView GetPlayerView();
         void DestroyPlayerView();
-        void ReleaseResources();
     }
 }

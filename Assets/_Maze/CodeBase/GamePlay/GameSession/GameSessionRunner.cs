@@ -99,8 +99,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _gamePlayProcessor.Stop();
             _playerMovementSystem.Dispose();
 
-            _mazeFactory.ReleaseResources();
-            _playerFactory.ReleaseResources();
             _playerFactory.DestroyPlayerView();
             _gamePauseProcessor.Dispose();
             _mazeFactory.DestroyMazeEnvironment();
