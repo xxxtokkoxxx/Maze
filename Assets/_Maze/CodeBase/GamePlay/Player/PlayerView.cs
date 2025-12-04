@@ -1,5 +1,4 @@
-﻿using System;
-using _Maze.CodeBase.Animations;
+﻿using _Maze.CodeBase.Animations;
 using _Maze.CodeBase.Extensions;
 using _Maze.CodeBase.GamePlay.Maze;
 using UnityEngine;
@@ -10,23 +9,6 @@ namespace _Maze.CodeBase.GamePlay.Player
     {
         [SerializeField] private PlayerAnimator _playerAnimator;
         [SerializeField] private SpriteRenderer _playerVisuals;
-
-        // private void Update()
-        // {
-        //     if (UnityEngine.Input.GetKeyDown(KeyCode.A))
-        //     {
-        //         SetMoveSpeed(Vector2Int.left);
-        //     }
-        //     else if (UnityEngine.Input.GetKeyDown(KeyCode.D))
-        //     {
-        //         SetMoveSpeed(Vector2Int.right);
-        //     }
-        //
-        //     if (UnityEngine.Input.GetKeyDown(KeyCode.D))
-        //     {
-        //         SetMoveSpeed(Vector2Int.zero);
-        //     }
-        // }
 
         public void SetMoveSpeed(Vector2Int direction)
         {
@@ -47,10 +29,6 @@ namespace _Maze.CodeBase.GamePlay.Player
             }
 
             _playerAnimator.PlayMove(true);
-        }
-
-        private void FlipPlayerSprite()
-        {
         }
     }
 }
