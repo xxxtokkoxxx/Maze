@@ -19,11 +19,16 @@ namespace _Maze.CodeBase.GamePlay.Maze
 
         public void RenderWalls()
         {
-            DestroyWalls();
+            DestroyEnvironment();
 
             int width = _mazeGenerator.MazeData.Width;
             int height = _mazeGenerator.MazeData.Height;
             float cellSize = _mazeGenerator.MazeData.CellSize;
+
+            FloorRenderer floorRenderer = _mazeFactory.GenerateFloor(width, height, _mazeGenerator.GetCentralPosition(),
+                _monoBehavioursProvider.MazeSpawnPoint);
+            Vector2Int centralPosition = _mazeGenerator.GetCentralPosition();
+            floorRenderer.transform.localPosition = new Vector2(-centralPosition.x, -centralPosition.y);
 
             CreateVerticalWalls(width, height, cellSize);
             CreateHorizontalWalls(width, height, cellSize);
@@ -69,7 +74,7 @@ namespace _Maze.CodeBase.GamePlay.Maze
             }
         }
 
-        private void DestroyWalls()
+        private void DestroyEnvironment()
         {
             _mazeFactory.DestroyMazeEnvironment();
         }

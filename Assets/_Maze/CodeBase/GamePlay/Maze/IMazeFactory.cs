@@ -9,5 +9,6 @@ namespace _Maze.CodeBase.GamePlay.Maze
         GameObject CreateWall(Vector2 position, Quaternion rotation, Transform parent);
         void ReleaseResources();
         void DestroyMazeEnvironment();
+        FloorRenderer GenerateFloor(int width, int height, Vector2 floorPosition, Transform parent);
     }
 }

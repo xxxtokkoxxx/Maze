@@ -7,7 +7,7 @@ namespace _Maze.CodeBase.GamePlay.Player
     public class PlayerFactory : IPlayerFactory
     {
         private GameObject _playerViewReference;
-        private GameObject _playerView;
+        private PlayerView _playerView;
 
         private readonly IAssetsLoaderService _assetsLoaderService;
 
@@ -23,15 +23,17 @@ namespace _Maze.CodeBase.GamePlay.Player
             _playerViewReference = loadingTask.Result;
         }
 
-        public GameObject CreatePlayer(Vector2 position, Transform parent)
+        public PlayerView CreatePlayer(Vector2 position, Transform parent)
         {
-            _playerView = Object.Instantiate(_playerViewReference, position, Quaternion.identity, parent);
+            _playerView = Object.Instantiate(_playerViewReference, position, Quaternion.identity, parent)
+                .GetComponent<PlayerView>();
+
             _playerView.transform.localPosition = position;
 
             return _playerView;
         }
 
-        public GameObject GetPlayerView()
+        public PlayerView GetPlayerView()
         {
             return _playerView;
         }

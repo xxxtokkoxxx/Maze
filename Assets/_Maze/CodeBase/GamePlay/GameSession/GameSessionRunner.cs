@@ -73,9 +73,9 @@ namespace _Maze.CodeBase.GamePlay.GameSession
                 ? new Vector2Int(data.PlayerProgress.PositionX, data.PlayerProgress.PositionY)
                 : _mazeGenerator.GetCentralPosition();
 
-            GameObject player = _playerFactory.CreatePlayer(playerPos, _monoBehavioursProvider.MazeSpawnPoint);
+            PlayerView player = _playerFactory.CreatePlayer(playerPos, _monoBehavioursProvider.MazeSpawnPoint);
 
-            _movementSystem.SetTargetTransform(player.transform);
+            _movementSystem.SetPlayerView(player);
             _movementSystem.SetStartPoint(playerPos);
             _cameraFollowSystem.Initialize(player.transform);
             _gamePlayProcessor.Run();
@@ -91,7 +91,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _inputStateProvider.SetEnabled(true);
 
             Vector2Int playerStartPos = _mazeGenerator.GetCentralPosition();
-            GameObject player = _playerFactory.GetPlayerView();
+            PlayerView player = _playerFactory.GetPlayerView();
 
             if (player == null)
             {
@@ -99,7 +99,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
                 _cameraFollowSystem.Initialize(player.transform);
             }
 
-            _movementSystem.SetTargetTransform(player.transform);
+            _movementSystem.SetPlayerView(player);
             _movementSystem.SetStartPoint(playerStartPos);
             player.transform.localPosition = new Vector2(playerStartPos.x, playerStartPos.y);
         }

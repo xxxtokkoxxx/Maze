@@ -20,16 +20,13 @@ namespace _Maze.CodeBase.UI
         public UIViewsFactory(IAssetsLoaderService loaderService,
             IMonoBehavioursProvider monoBehaviourProvider)
         {
-            Debug.Log("Creating UI Views Factory");
             _loaderService = loaderService;
             _monoBehaviourProvider = monoBehaviourProvider;
         }
 
         public async Task LoadViews()
         {
-            Debug.Log("load views view");
             IList<BaseView> views = await _loaderService.LoadAssets<BaseView>(AssetsDataPath.UIViews);
-            Debug.Log("views are laoded");
             _viewReferences = views;
         }
 
@@ -46,7 +43,6 @@ namespace _Maze.CodeBase.UI
 
             TView view = Object.Instantiate(reference, spawnPoint).GetComponent<TView>();
             view.Id = Guid.NewGuid();
-            Debug.Log("try to create view " + view.Id);
 
             _activeViews.Add(view);
             return view;
@@ -54,7 +50,6 @@ namespace _Maze.CodeBase.UI
 
         public void DestroyView(Guid id)
         {
-            Debug.Log("call destroy " + id);
             BaseView view = _activeViews.FirstOrDefault(a => a.Id == id);
 
             if (view == null)

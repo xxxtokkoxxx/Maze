@@ -10,6 +10,8 @@ namespace _Maze.CodeBase.GamePlay.Maze
         private readonly IAssetsLoaderService _assetsLoaderService;
         private GameObject _wallReference;
         private List<GameObject> _createdWalls = new();
+        private FloorRenderer _floorRendererReference;
+        private FloorRenderer _floorRenderer;
 
         public MazeFactory(IAssetsLoaderService assetsLoaderService)
         {
@@ -18,9 +20,13 @@ namespace _Maze.CodeBase.GamePlay.Maze
 
         public async Task LoadReferences()
         {
-            Task<GameObject> loadingTask = _assetsLoaderService.LoadAsset(AssetsDataPath.Wall);
-            await loadingTask;
-            _wallReference = loadingTask.Result;
+            Task<GameObject> wallLoadingTask = _assetsLoaderService.LoadAsset(AssetsDataPath.Wall);
+            Task<GameObject> floorRendererLoadingTask = _assetsLoaderService.LoadAsset(AssetsDataPath.FloorRenderer);
+
+            await Task.WhenAll(wallLoadingTask, floorRendererLoadingTask);
+
+            _wallReference = wallLoadingTask.Result;
+            _floorRendererReference = floorRendererLoadingTask.Result.GetComponent<FloorRenderer>();
         }
 
         public GameObject CreateWall(Vector2 position, Quaternion rotation, Transform parent)
@@ -34,6 +40,7 @@ namespace _Maze.CodeBase.GamePlay.Maze
         public void ReleaseResources()
         {
             _assetsLoaderService.Release(AssetsDataPath.Wall);
+            _assetsLoaderService.Release(AssetsDataPath.FloorRenderer);
         }
 
         public void DestroyMazeEnvironment()
@@ -43,7 +50,20 @@ namespace _Maze.CodeBase.GamePlay.Maze
                 Object.Destroy(wall.gameObject);
             }
 
+            _floorRendererReference.ClearAllTiles();
             _createdWalls.Clear();
+        }
+
+        public FloorRenderer GenerateFloor(int width, int height, Vector2 floorPosition, Transform parent)
+        {
+            if (_floorRenderer == null)
+            {
+                _floorRenderer = Object.Instantiate(_floorRendererReference, parent);
+            }
+
+            _floorRenderer.GenerateFloor(width, height);
+
+            return _floorRenderer;
         }
     }
 }

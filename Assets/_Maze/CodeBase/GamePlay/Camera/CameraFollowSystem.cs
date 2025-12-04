@@ -32,7 +32,7 @@ namespace _Maze.CodeBase.GamePlay.Camera
         {
             if (_isEnabled)
             {
-                Vector2 targetPos = Vector2.Lerp(_cameraTransform.position, _target.position, Time.deltaTime * 10f);
+                Vector2 targetPos = Vector2.Lerp(_cameraTransform.position, _target.position, Time.deltaTime * 100f);
                 _cameraTransform.position = new Vector3(targetPos.x, targetPos.y, _cameraTransform.position.z);
             }
         }

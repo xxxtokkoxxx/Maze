@@ -13,6 +13,9 @@ namespace _Maze.CodeBase.Infrastructure
         private IUIViewsFactory _uiViewsFactory;
         private IEnumerable<IViewController> _viewControllers;
 
+        [SerializeField] private float _targetWorldWidth = 20f;
+        [SerializeField] private Camera _camera;
+
         [Inject]
         public void Inject(IUIService uiService, IUIViewsFactory uiViewsFactory,
             IEnumerable<IViewController> viewControllers)
@@ -27,6 +30,7 @@ namespace _Maze.CodeBase.Infrastructure
             await _uiViewsFactory.LoadViews();
             _uiService.Initialize(_viewControllers.ToArray());
             _uiService.ShowWindow(ViewType.MainMenu);
+            ApplyCameraSize();
         }
 
         private void Update()
@@ -35,6 +39,12 @@ namespace _Maze.CodeBase.Infrastructure
             {
                 PlayerPrefs.DeleteAll();
             }
+        }
+
+        private void ApplyCameraSize()
+        {
+            float aspect = (float)Screen.width / Screen.height;
+            _camera.orthographicSize = _targetWorldWidth / 2f / aspect;
         }
     }
 }

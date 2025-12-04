@@ -1,3 +1,4 @@
+using _Maze.CodeBase.GamePlay.Maze;
 using UnityEngine;
 
 namespace _Maze.CodeBase.Infrastructure
@@ -8,9 +9,12 @@ namespace _Maze.CodeBase.Infrastructure
         [SerializeField] private Camera _cachedCamera;
         [SerializeField] private Transform _uiSpawnPoint;
         [SerializeField] private Transform _hudSpawnPoint;
+        [SerializeField] private FloorRenderer _floorRenderer;
+
         public Transform MazeSpawnPoint => _mazeSpawnPoint;
         public Camera CachedCamera => _cachedCamera;
         public Transform UISpawnPoint => _uiSpawnPoint;
         public Transform HUDSpawnPoint => _hudSpawnPoint;
+        public FloorRenderer FloorRenderer => _floorRenderer;
     }
 }
