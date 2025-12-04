@@ -2,6 +2,7 @@ using System;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.Input;
+using DG.Tweening;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -11,10 +12,10 @@ namespace _Maze.CodeBase.GamePlay.Player
     {
         public event Action<Vector2Int> OnMove;
 
-        private float _moveCooldown = 0.15f;
-        private float _moveTimer = 0f;
+        private float _moveTimer;
+        private float _moveDuration = 0.35f;
 
-        private Transform _playerTransform;
+        private PlayerView _playerView;
         private Vector2Int _currentPosition;
 
         private readonly IInputStateProvider _inputStateProvider;
@@ -42,9 +43,9 @@ namespace _Maze.CodeBase.GamePlay.Player
             _gamePauseProcessor.RemovePausable(this);
         }
 
-        public void SetTargetTransform(Transform playerTransform)
+        public void SetPlayerView(PlayerView playerTransform)
         {
-            _playerTransform = playerTransform;
+            _playerView = playerTransform;
         }
 
         public void SetStartPoint(Vector2Int position)
@@ -54,16 +55,9 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         public void Tick()
         {
-            if (_isEnabled && _playerTransform != null)
+            if (_isEnabled && _playerView != null)
             {
-                _moveTimer -= Time.deltaTime;
-
-                if (_moveTimer > 0f)
-                {
-                    return;
-                }
-
-                Vector2 mousePosition = _inputStateProvider.GetMouseGridDirection(_playerTransform.position);
+                Vector2 mousePosition = _inputStateProvider.GetMouseGridDirection(_playerView.transform.position);
                 Vector2 pos;
 
                 if (mousePosition != Vector2Int.zero)
@@ -76,6 +70,14 @@ namespace _Maze.CodeBase.GamePlay.Player
                 }
 
                 Vector2Int transformedPos = new Vector2Int((int) pos.x, (int) pos.y);
+                _playerView.SetMoveSpeed(transformedPos);
+                _moveTimer -= Time.deltaTime;
+
+                if (_moveTimer > 0f)
+                {
+                    return;
+                }
+
                 MoveTo(transformedPos);
             }
         }
@@ -83,12 +85,6 @@ namespace _Maze.CodeBase.GamePlay.Player
         public void SetPaused(bool isPaused)
         {
             _isEnabled = !isPaused;
-        }
-
-        private void SetPositionOnCell(Vector2Int position)
-        {
-            _currentPosition = position;
-            _playerTransform.localPosition = new Vector3(position.x, position.y, 0f);
         }
 
         private void MoveTo(Vector2Int direction)
@@ -100,10 +96,16 @@ namespace _Maze.CodeBase.GamePlay.Player
                     Vector2Int nextPosition = new Vector2Int(_currentPosition.x + direction.x,
                         _currentPosition.y + direction.y);
                     SetPositionOnCell(nextPosition);
-                    _moveTimer = _moveCooldown;
+                    _moveTimer = _moveDuration;
                     OnMove?.Invoke(_currentPosition);
                 }
             }
+        }
+
+        private void SetPositionOnCell(Vector2Int position)
+        {
+            _currentPosition = position;
+            _playerView.transform.DOLocalMove(new Vector3(position.x, position.y, 0f), _moveDuration);
         }
     }
 }

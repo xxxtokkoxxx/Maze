@@ -72,6 +72,8 @@ namespace _Maze.CodeBase.GamePlay.Pause
                     pauseable.SetPaused(isPaused);
                 }
             }
+
+            Time.timeScale = isPaused ? 0 : 1;
         }
 
         private void ShowPauseMenu(bool isPaused)

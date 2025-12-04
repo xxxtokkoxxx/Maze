@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Environment
   m_GUID: ba3e927608db4e046902b206345021d2
   m_SerializeEntries:
+  - m_GUID: ebec1e33d250b344f803bd3951c8e4ec
+    m_Address: FloorRenderer
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f600edbd8adc71144b83bd4a933269cb
     m_Address: Wall
     m_ReadOnly: 0

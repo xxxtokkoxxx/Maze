@@ -1,5 +1,4 @@
 ﻿using System;
-using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Infrastructure;
 using UnityEngine;
 using UnityEngine.InputSystem;

@@ -10,6 +10,7 @@ namespace _Maze.CodeBase.GamePlay.Camera
         private bool _isEnabled;
         private Transform _cameraTransform;
         private Transform _target;
+        private float _speedMultiplier = 25;
 
         public CameraFollowSystem(IMonoBehavioursProvider monoBehavioursProvider)
         {
@@ -32,7 +33,7 @@ namespace _Maze.CodeBase.GamePlay.Camera
         {
             if (_isEnabled)
             {
-                Vector2 targetPos = Vector2.Lerp(_cameraTransform.position, _target.position, Time.deltaTime * 10f);
+                Vector2 targetPos = Vector2.Lerp(_cameraTransform.position, _target.position, Time.deltaTime * _speedMultiplier);
                 _cameraTransform.position = new Vector3(targetPos.x, targetPos.y, _cameraTransform.position.z);
             }
         }
