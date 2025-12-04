@@ -15,20 +15,20 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
     {
         private List<LoadedAsset> _cache = new();
 
-        public async Task<GameObject> LoadAsset(string path)
+        public async Task<TAssetType> LoadAsset<TAssetType>(string path) where TAssetType : Object
         {
-            bool assetExist = TryToGetAssetFromCache(path, out GameObject asset);
+            bool assetExist = TryToGetAssetFromCache(path, out TAssetType asset);
 
             if (assetExist)
             {
                 return asset;
             }
 
-            AsyncOperationHandle<GameObject> operationHandle;
+            AsyncOperationHandle<TAssetType> operationHandle;
 
             try
             {
-                operationHandle = Addressables.LoadAssetAsync<GameObject>(path);
+                operationHandle = Addressables.LoadAssetAsync<TAssetType>(path);
                 await operationHandle.Task;
             }
             catch (Exception e)
@@ -36,8 +36,9 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
                 throw new InvalidDataException($"Failed to load asset: {path}", e);
             }
 
-            _cache.Add(new LoadedAsset(path, operationHandle, operationHandle.Result));
-            return operationHandle.Result;
+            TAssetType result = operationHandle.Result;
+            _cache.Add(new LoadedAsset(path, operationHandle, result));
+            return result;
         }
 
         public async Task<IList<TAssetType>> LoadAssets<TAssetType>(string label)

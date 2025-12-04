@@ -1,3 +1,4 @@
+using _Maze.CodeBase.Configuration;
 using _Maze.CodeBase.GamePlay.Camera;
 using _Maze.CodeBase.GamePlay.GameSession;
 using _Maze.CodeBase.GamePlay.Maze;
@@ -42,6 +43,7 @@ namespace _Maze.CodeBase.Infrastructure
             builder.Register<IViewController, PauseUIController>(Lifetime.Singleton);
             builder.Register<IViewController, IHeadsUpDisplay, HeadsUpDisplayUiController>(Lifetime.Singleton);
             builder.Register<IGameRuntimeDataContainer, GameRuntimeDataContainerContainer>(Lifetime.Singleton);
+            builder.Register<IGameConfiguration, GameConfiguration>(Lifetime.Singleton);
 
             builder.RegisterComponent(_monoBehavioursProvider).AsImplementedInterfaces();
         }

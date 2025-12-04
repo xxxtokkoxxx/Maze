@@ -20,8 +20,8 @@ namespace _Maze.CodeBase.GamePlay.Maze
 
         public async Task LoadReferences()
         {
-            Task<GameObject> wallLoadingTask = _assetsLoaderService.LoadAsset(AssetsDataPath.Wall);
-            Task<GameObject> floorRendererLoadingTask = _assetsLoaderService.LoadAsset(AssetsDataPath.FloorRenderer);
+            Task<GameObject> wallLoadingTask = _assetsLoaderService.LoadAsset<GameObject>(AssetsDataPath.Wall);
+            Task<GameObject> floorRendererLoadingTask = _assetsLoaderService.LoadAsset<GameObject>(AssetsDataPath.FloorRenderer);
 
             await Task.WhenAll(wallLoadingTask, floorRendererLoadingTask);
 
@@ -47,10 +47,17 @@ namespace _Maze.CodeBase.GamePlay.Maze
         {
             foreach (GameObject wall in _createdWalls)
             {
-                Object.Destroy(wall.gameObject);
+                if (wall != null)
+                {
+                    Object.Destroy(wall.gameObject);
+                }
             }
 
-            _floorRendererReference.ClearAllTiles();
+            if (_floorRenderer != null)
+            {
+                _floorRenderer.ClearAllTiles();
+            }
+
             _createdWalls.Clear();
         }
 

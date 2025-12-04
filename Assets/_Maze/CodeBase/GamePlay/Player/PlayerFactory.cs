@@ -18,7 +18,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         public async Task LoadPlayerReference()
         {
-            Task<GameObject> loadingTask = _assetsLoaderService.LoadAsset(AssetsDataPath.PlayerView);
+            Task<GameObject> loadingTask = _assetsLoaderService.LoadAsset<GameObject>(AssetsDataPath.PlayerView);
             await loadingTask;
             _playerViewReference = loadingTask.Result;
         }
