@@ -1,4 +1,6 @@
-﻿using _Maze.CodeBase.Data;
+﻿using System;
+using _Maze.CodeBase.Configuration;
+using _Maze.CodeBase.Data;
 using _Maze.CodeBase.GamePlay.GameSession;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.Progress;
@@ -17,18 +19,21 @@ namespace _Maze.CodeBase.UI.MainMenu
         private readonly ISaveLoadService _saveLoadService;
         private readonly IUIService _uiService;
         private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
+        private readonly IGameConfiguration _gameConfiguration;
 
         public MainMenuUIController(IUIViewsFactory viewsFactory,
             IGameSessionRunner gameSessionRunner,
             ISaveLoadService saveLoadService,
             IUIService uiService,
-            IGameRuntimeDataContainer gameRuntimeDataContainer)
+            IGameRuntimeDataContainer gameRuntimeDataContainer,
+            IGameConfiguration gameConfiguration)
         {
             _viewsFactory = viewsFactory;
             _gameSessionRunner = gameSessionRunner;
             _saveLoadService = saveLoadService;
             _uiService = uiService;
             _gameRuntimeDataContainer = gameRuntimeDataContainer;
+            _gameConfiguration = gameConfiguration;
         }
 
         public override ViewType ViewType => ViewType.MainMenu;
@@ -37,7 +42,8 @@ namespace _Maze.CodeBase.UI.MainMenu
         {
             if (_mazeData == null)
             {
-                _mazeData = new MazeData(10, 10, 1, 1);
+                _mazeData = new MazeData(_gameConfiguration.MinMazeSize.x, _gameConfiguration.MinMazeSize.y, 1,
+                    _gameConfiguration.MinExists);
             }
 
             Subscribe();
@@ -49,7 +55,7 @@ namespace _Maze.CodeBase.UI.MainMenu
             }
 
             View.UpdateExistsCountText(_mazeData.ExitsCount);
-            View.UpdateMazeWidthText(_mazeData.Height);
+            View.UpdateMazeWidthText(_mazeData.Width);
             View.UpdateMazeHeightText(_mazeData.Height);
 
             SetLoadGameButtonEnabled();
@@ -118,19 +124,25 @@ namespace _Maze.CodeBase.UI.MainMenu
 
         private void SetExistsCount(int existsCount)
         {
-            _mazeData.ExitsCount += existsCount;
+            _mazeData.ExitsCount = Math.Clamp(_mazeData.ExitsCount + existsCount, _gameConfiguration.MinExists,
+                _gameConfiguration.MaxExists);
+
             View.UpdateExistsCountText(_mazeData.ExitsCount);
         }
 
         private void SetMazeWidth(int mazeWidth)
         {
-            _mazeData.Width += mazeWidth;
+            _mazeData.Width = Math.Clamp(_mazeData.Width + mazeWidth, _gameConfiguration.MinMazeSize.x,
+                _gameConfiguration.MaxMazeSize.x);
+
             View.UpdateMazeWidthText(_mazeData.Width);
         }
 
         private void SetMazeHeight(int mazeHeight)
         {
-            _mazeData.Height += mazeHeight;
+            _mazeData.Height = Math.Clamp(_mazeData.Height + mazeHeight, _gameConfiguration.MinMazeSize.y,
+                _gameConfiguration.MaxMazeSize.y);
+
             View.UpdateMazeHeightText(_mazeData.Height);
         }
 

@@ -10,6 +10,7 @@ namespace _Maze.CodeBase.GamePlay.Maze
 
         public void GenerateFloor(int width, int height)
         {
+            ClearAllTiles();
             for (int x = 0; x < width + width; x++)
             {
                 for (int y = 0; y < height + height; y++)

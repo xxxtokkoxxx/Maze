@@ -4,9 +4,7 @@ using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Infrastructure;
-using _Maze.CodeBase.Input;
 using _Maze.CodeBase.Progress;
-using _Maze.CodeBase.UI;
 using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.GameSession
@@ -21,8 +19,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly ICameraFollowSystem _cameraFollowSystem;
         private readonly IGamePlayProcessor _gamePlayProcessor;
         private readonly IMonoBehavioursProvider _monoBehavioursProvider;
-        private readonly IInputStateProvider _inputStateProvider;
-        private readonly IUIService _uiService;
         private readonly IPlayerMovementSystem _playerMovementSystem;
         private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IGamePauseProcessor _gamePauseProcessor;
@@ -35,8 +31,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             ICameraFollowSystem cameraFollowSystem,
             IGamePlayProcessor gamePlayProcessor,
             IMonoBehavioursProvider monoBehavioursProvider,
-            IInputStateProvider inputStateProvider,
-            IUIService uiService,
             IPlayerMovementSystem playerMovementSystem,
             IGameRuntimeDataContainer gameRuntimeDataContainer,
             IGamePauseProcessor gamePauseProcessor)
@@ -49,8 +43,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _cameraFollowSystem = cameraFollowSystem;
             _gamePlayProcessor = gamePlayProcessor;
             _monoBehavioursProvider = monoBehavioursProvider;
-            _inputStateProvider = inputStateProvider;
-            _uiService = uiService;
             _playerMovementSystem = playerMovementSystem;
             _gameRuntimeDataContainer = gameRuntimeDataContainer;
             _gamePauseProcessor = gamePauseProcessor;
@@ -66,7 +58,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
             ShiftMazeSpawnPoint(data.MazeData);
             _mazeGenerator.GenerateMaze(data.MazeData);
-
             _mazeRenderer.RenderWalls();
 
             Vector2Int playerPos = loadGameProgressData
@@ -79,7 +70,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _movementSystem.SetStartPoint(playerPos);
             _cameraFollowSystem.Initialize(player.transform);
             _gamePlayProcessor.Run();
-            _inputStateProvider.SetEnabled(true);
         }
 
         public void RestartGame()
@@ -88,7 +78,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _mazeGenerator.GenerateMaze(_gameRuntimeDataContainer.GetGameProgressData().MazeData);
             _mazeRenderer.RenderWalls();
             _gamePlayProcessor.Reset();
-            _inputStateProvider.SetEnabled(true);
 
             Vector2Int playerStartPos = _mazeGenerator.GetCentralPosition();
             PlayerView player = _playerFactory.GetPlayerView();

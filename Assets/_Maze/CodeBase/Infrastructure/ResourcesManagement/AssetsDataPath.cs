@@ -7,6 +7,7 @@
         public const string Wall = "Wall";
         public const string WallRenderer = "WallRenderer";
         public const string ResourceLocation = "ResourceLocation";
+        public const string Configuration = "GameConfiguration";
 
         #region Labels
 

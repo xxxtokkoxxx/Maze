@@ -51,6 +51,8 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _elapsedTime = _gameRuntimeDataContainer.GetSessionTime();
             _pauseProcessor.AddPausable(this);
             _playerMovementSystem.OnMove += OnPlayerMoved;
+            _gameRuntimeDataContainer.SetPlayerPosition(_playerMovementSystem.GetCurrentPositionPoint());
+            _inputStateProvider.SetEnabled(true);
         }
 
         public void Reset()
@@ -58,6 +60,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _elapsedTime = 0;
             _headsUpDisplay.UpdateTimer(0);
             _headsUpDisplay.UpdateStepsCount(0);
+            _inputStateProvider.SetEnabled(true);
         }
 
         public void Stop()

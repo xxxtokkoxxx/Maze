@@ -66,7 +66,7 @@ namespace _Maze.CodeBase.GamePlay.Player
                 }
                 else
                 {
-                    pos = _inputStateProvider.GetMovementDirection();;
+                    pos = _inputStateProvider.GetMovementDirection();
                 }
 
                 Vector2Int transformedPos = new Vector2Int((int) pos.x, (int) pos.y);
@@ -85,6 +85,11 @@ namespace _Maze.CodeBase.GamePlay.Player
         public void SetPaused(bool isPaused)
         {
             _isEnabled = !isPaused;
+        }
+
+        public Vector2Int GetCurrentPositionPoint()
+        {
+            return _currentPosition;
         }
 
         private void MoveTo(Vector2Int direction)
