@@ -29,7 +29,6 @@ namespace _Maze.CodeBase.UI.GameOver
 
         public void SetGameResultsText(float totalTime, int totalSteps)
         {
-            Debug.Log(totalTime);
             int minutes = Mathf.FloorToInt(totalTime / 60f);
             int seconds = Mathf.FloorToInt(totalTime % 60f);
 
