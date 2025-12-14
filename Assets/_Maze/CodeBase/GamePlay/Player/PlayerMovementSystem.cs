@@ -1,16 +1,19 @@
 using System;
+using _Maze.CodeBase.Extensions;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.Input;
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.Player
 {
-    public class PlayerMovementSystem : IPlayerMovementSystem, ITickable, IPauseable
+    public class PlayerMovementSystem : IPlayerMovementSystem, IPauseable, IInitializable, IDisposable
     {
-        public event Action<Vector2Int> OnMove;
+        public event Action<Vector2Int> OnMoved;
 
         private float _moveTimer;
         private float _moveDuration = 0.35f;
@@ -35,12 +38,14 @@ namespace _Maze.CodeBase.GamePlay.Player
         {
             _isEnabled = true;
             _gamePauseProcessor.AddPausable(this);
+            _inputStateProvider.OnPlayerMovement += OnMove;
         }
 
         public void Dispose()
         {
             _isEnabled = false;
             _gamePauseProcessor.RemovePausable(this);
+            _inputStateProvider.OnPlayerMovement -= OnMove;
         }
 
         public void SetPlayerView(PlayerView playerTransform)
@@ -53,32 +58,16 @@ namespace _Maze.CodeBase.GamePlay.Player
             _currentPosition = position;
         }
 
-        public void Tick()
+        private void OnMove(Vector2 direction)
         {
-            if (_isEnabled && _playerView != null)
+            RaycastHit2D result = Physics2D.Raycast(_playerView.transform.position, direction);
+            if (result.collider != null)
             {
-                Vector2 mousePosition = _inputStateProvider.GetMouseGridDirection(_playerView.transform.position);
-                Vector2 pos;
-
-                if (mousePosition != Vector2Int.zero)
+                TweenerCore<Vector3, Vector3, VectorOptions> moveAnima = _playerView.transform.DOMove(new Vector3(result.point.x, result.point.y, 0), _moveDuration);
+                moveAnima.onComplete += () =>
                 {
-                    pos = mousePosition;
-                }
-                else
-                {
-                    pos = _inputStateProvider.GetMovementDirection();
-                }
-
-                Vector2Int transformedPos = new Vector2Int((int) pos.x, (int) pos.y);
-                _playerView.SetMoveSpeed(transformedPos);
-                _moveTimer -= Time.deltaTime;
-
-                if (_moveTimer > 0f)
-                {
-                    return;
-                }
-
-                MoveTo(transformedPos);
+                    _playerView.SetVisualsDirection(direction.ToDirection());
+                };
             }
         }
 
@@ -102,7 +91,7 @@ namespace _Maze.CodeBase.GamePlay.Player
                         _currentPosition.y + direction.y);
                     SetPositionOnCell(nextPosition);
                     _moveTimer = _moveDuration;
-                    OnMove?.Invoke(_currentPosition);
+                    OnMoved?.Invoke(_currentPosition);
                 }
             }
         }

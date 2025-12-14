@@ -28,7 +28,7 @@ namespace _Maze.CodeBase.GamePlay.Player
             _playerView = Object.Instantiate(_playerViewReference, position, Quaternion.identity, parent)
                 .GetComponent<PlayerView>();
 
-            _playerView.transform.localPosition = position;
+            _playerView.transform.localPosition = Vector2.zero;
 
             return _playerView;
         }

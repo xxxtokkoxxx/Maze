@@ -39,8 +39,11 @@ namespace _Maze.CodeBase.Input
 
         public void OnMove(InputAction.CallbackContext context)
         {
-            Vector2 direction = context.ReadValue<Vector2>();
-            OnPlayerMovement?.Invoke(direction);
+            if (context.phase == InputActionPhase.Started)
+            {
+                Vector2 direction = context.ReadValue<Vector2>();
+                OnPlayerMovement?.Invoke(direction);
+            }
         }
 
         public Vector2 GetMouseGridDirection(Vector2 playerPosition)

@@ -1,3 +1,4 @@
+using System;
 using _Maze.CodeBase.Configuration;
 using _Maze.CodeBase.GamePlay.Camera;
 using _Maze.CodeBase.GamePlay.GameSession;
@@ -28,7 +29,7 @@ namespace _Maze.CodeBase.Infrastructure
             builder.Register<IMazeGenerator, MazeGenerator>(Lifetime.Singleton);
             builder.Register<IMazeFactory, MazeFactory>(Lifetime.Singleton);
             builder.Register<IPlayerFactory, PlayerFactory>(Lifetime.Singleton);
-            builder.Register<IPlayerMovementSystem, ITickable, PlayerMovementSystem>(Lifetime.Singleton);
+            builder.Register<IPlayerMovementSystem, IInitializable, IDisposable, PlayerMovementSystem>(Lifetime.Singleton);
             builder.Register<IGameSessionRunner, GameSessionRunner>(Lifetime.Singleton);
             builder.Register<IInputStateProvider, InputStateProvider>(Lifetime.Singleton);
             builder.Register<ICameraFollowSystem, ITickable, CameraFollowSystem>(Lifetime.Singleton);

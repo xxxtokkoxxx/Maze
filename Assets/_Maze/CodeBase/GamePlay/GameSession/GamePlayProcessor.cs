@@ -50,7 +50,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _isEnabled = true;
             _elapsedTime = _gameRuntimeDataContainer.GetSessionTime();
             _pauseProcessor.AddPausable(this);
-            _playerMovementSystem.OnMove += OnPlayerMoved;
+            _playerMovementSystem.OnMoved += OnPlayerMoved;
             _gameRuntimeDataContainer.SetPlayerPosition(_playerMovementSystem.GetCurrentPositionPoint());
             _inputStateProvider.SetEnabled(true);
         }
@@ -67,7 +67,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         {
             _isEnabled = false;
             _pauseProcessor.RemovePausable(this);
-            _playerMovementSystem.OnMove -= OnPlayerMoved;
+            _playerMovementSystem.OnMoved -= OnPlayerMoved;
         }
 
         public void Tick()

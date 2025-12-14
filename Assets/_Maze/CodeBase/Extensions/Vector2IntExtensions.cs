@@ -5,6 +5,31 @@ namespace _Maze.CodeBase.Extensions
 {
     public static class Vector2IntExtensions
     {
+        public static Direction ToDirection(this Vector2 vector)
+        {
+            if (Mathf.Approximately(vector.x, 1))
+            {
+                return Direction.Right;
+            }
+
+            if (Mathf.Approximately(vector.x, -1))
+            {
+                return Direction.Left;
+            }
+
+            if (Mathf.Approximately(vector.y, 1))
+            {
+                return Direction.Up;
+            }
+
+            if (Mathf.Approximately(vector.y, -1))
+            {
+                return Direction.Down;
+            }
+
+            return Direction.NotDefined;
+        }
+
         public static Direction ToDirection(this Vector2Int vector)
         {
             if (vector.x == 1)

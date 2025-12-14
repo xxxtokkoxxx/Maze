@@ -8,5 +8,6 @@ namespace _Maze.CodeBase.Infrastructure
         Camera CachedCamera { get; }
         Transform UISpawnPoint { get; }
         Transform HUDSpawnPoint { get; }
+        Transform PlayerSpawnPoint { get; }
     }
 }
