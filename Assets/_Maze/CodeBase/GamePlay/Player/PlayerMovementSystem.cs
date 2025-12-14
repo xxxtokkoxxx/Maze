@@ -60,10 +60,13 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         private void OnMove(Vector2 direction)
         {
-            RaycastHit2D result = Physics2D.Raycast(_playerView.transform.position, direction);
+            RaycastHit2D result = Physics2D.Raycast(_playerView.RaycastOffset, direction);
             if (result.collider != null)
             {
-                TweenerCore<Vector3, Vector3, VectorOptions> moveAnima = _playerView.transform.DOMove(new Vector3(result.point.x, result.point.y, 0), _moveDuration);
+                TweenerCore<Vector3, Vector3, VectorOptions> moveAnima = _playerView.transform
+                    .DOMove(new Vector2(result.point.x - _playerView.Visuals.bounds.size.x / 2 * direction.x,
+                            result.point.y - _playerView.Visuals.bounds.size.y / 2 * direction.y), Vector2.Distance(_playerView.transform.position, result.point) * 0.05f);
+
                 moveAnima.onComplete += () =>
                 {
                     _playerView.SetVisualsDirection(direction.ToDirection());

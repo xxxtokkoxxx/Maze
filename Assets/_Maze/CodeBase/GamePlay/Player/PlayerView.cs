@@ -11,7 +11,8 @@ namespace _Maze.CodeBase.GamePlay.Player
         [SerializeField] private SpriteRenderer _playerVisuals;
         [SerializeField] private Transform _raycastOffset;
 
-        // public Vector2 RaycastOffset => _raycastOffset.transform.position;
+        public Vector2 RaycastOffset => _raycastOffset.transform.position;
+        public SpriteRenderer Visuals => _playerVisuals;
 
         public void SetMoveSpeed(Vector2Int direction)
         {
@@ -39,19 +40,18 @@ namespace _Maze.CodeBase.GamePlay.Player
             switch (direction)
             {
                 case Direction.Left:
-                    _playerVisuals.transform.localRotation = Quaternion.Euler(0, 0, -90);
+                    transform.localRotation = Quaternion.Euler(0, 0, -90);
                     break;
                 case Direction.Right:
-                    _playerVisuals.transform.localRotation = Quaternion.Euler(0, 0, 90);
+                    transform.localRotation = Quaternion.Euler(0, 0, 90);
                     break;
                 case Direction.Down:
-                    _playerVisuals.transform.localRotation = Quaternion.Euler(0, 0, 0);
+                    transform.localRotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case Direction.Up:
-                    _playerVisuals.transform.localRotation = Quaternion.Euler(180, 0, 0);
+                    transform.localRotation = Quaternion.Euler(180, 0, 0);
                     break;
             }
-
         }
 
         private void Update()
@@ -60,15 +60,15 @@ namespace _Maze.CodeBase.GamePlay.Player
             void Draw(RaycastHit2D hit)
             {
                 if (hit.collider != null)
-                    Debug.DrawLine(transform.position, hit.point, Color.green);
+                    Debug.DrawLine(_raycastOffset.position, hit.point, Color.green);
                 else
-                    Debug.DrawRay(transform.position, hit.point, Color.red);
+                    Debug.DrawRay(_raycastOffset.position, hit.point, Color.red);
             }
 
-            Draw(Physics2D.Raycast(transform.position, Vector2.down));
-            Draw(Physics2D.Raycast(transform.position, Vector2.up));
-            Draw(Physics2D.Raycast(transform.position, Vector2.left));
-            Draw(Physics2D.Raycast(transform.position, Vector2.right));
+            Draw(Physics2D.Raycast(_raycastOffset.position, Vector2.down));
+            Draw(Physics2D.Raycast(_raycastOffset.position, Vector2.up));
+            Draw(Physics2D.Raycast(_raycastOffset.position, Vector2.left));
+            Draw(Physics2D.Raycast(_raycastOffset.position, Vector2.right));
         }
     }
 }
