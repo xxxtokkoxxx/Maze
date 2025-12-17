@@ -35,15 +35,22 @@ namespace _Maze.CodeBase.GamePlay.Player
             _playerAnimator.PlayMove(true);
         }
 
+        public void PlayJumpAnimation(float duration)
+        {
+            _playerAnimator.PlayJump(duration);
+        }
+
         public void SetVisualsDirection(Direction direction)
         {
             switch (direction)
             {
                 case Direction.Left:
                     transform.localRotation = Quaternion.Euler(0, 0, -90);
+                    _playerVisuals.transform.localRotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case Direction.Right:
                     transform.localRotation = Quaternion.Euler(0, 0, 90);
+                    _playerVisuals.transform.localRotation = Quaternion.Euler(0, 180, 0);
                     break;
                 case Direction.Down:
                     transform.localRotation = Quaternion.Euler(0, 0, 0);
