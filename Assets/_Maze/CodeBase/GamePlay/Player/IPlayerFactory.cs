@@ -6,8 +6,8 @@ namespace _Maze.CodeBase.GamePlay.Player
     public interface IPlayerFactory
     {
         Task LoadPlayerReference();
-        PlayerView CreatePlayer(Vector2 position, Transform parent);
-        PlayerView GetPlayerView();
+        IPlayer CreatePlayer(Vector2 position, Transform parent);
+        IPlayer GetPlayer();
         void DestroyPlayerView();
     }
 }

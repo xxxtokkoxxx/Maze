@@ -1,6 +1,7 @@
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
+using _Maze.CodeBase.Infrastructure;
 using _Maze.CodeBase.Input;
 using _Maze.CodeBase.Progress;
 using _Maze.CodeBase.UI;
@@ -16,29 +17,29 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private bool _isEnabled;
         private int _minimalPlayerStepCount = 1;
 
-        private readonly IPlayerMovementSystem _playerMovementSystem;
-        private readonly IMazeGenerator _mazeGenerator;
         private readonly IInputStateProvider _inputStateProvider;
         private readonly IUIService _uiService;
         private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IHeadsUpDisplay _headsUpDisplay;
         private readonly IGamePauseProcessor _pauseProcessor;
+        private readonly IGameplayEventBus _gameplayEventBus;
+        private readonly IPlayerFactory _playerFactory;
 
-        public GamePlayProcessor(IPlayerMovementSystem playerMovementSystem,
-            IMazeGenerator mazeGenerator,
-            IInputStateProvider inputStateProvider,
+        public GamePlayProcessor(IInputStateProvider inputStateProvider,
             IUIService uiService,
             IGameRuntimeDataContainer gameRuntimeDataContainer,
             IHeadsUpDisplay headsUpDisplay,
-            IGamePauseProcessor pauseProcessor)
+            IGamePauseProcessor pauseProcessor,
+            IGameplayEventBus gameplayEventBus,
+            IPlayerFactory playerFactory)
         {
-            _playerMovementSystem = playerMovementSystem;
-            _mazeGenerator = mazeGenerator;
             _inputStateProvider = inputStateProvider;
             _uiService = uiService;
             _gameRuntimeDataContainer = gameRuntimeDataContainer;
             _headsUpDisplay = headsUpDisplay;
             _pauseProcessor = pauseProcessor;
+            _gameplayEventBus = gameplayEventBus;
+            _playerFactory = playerFactory;
         }
 
         public void Run()
@@ -50,9 +51,10 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _isEnabled = true;
             _elapsedTime = _gameRuntimeDataContainer.GetSessionTime();
             _pauseProcessor.AddPausable(this);
-            _playerMovementSystem.OnMoved += OnPlayerMoved;
-            _gameRuntimeDataContainer.SetPlayerPosition(_playerMovementSystem.GetCurrentPositionPoint());
             _inputStateProvider.SetEnabled(true);
+            _gameplayEventBus.Subscribe<PlayerDeathMessage>(OnPlayerDeath);
+            IPlayer player = _playerFactory.GetPlayer();
+            player.ResetPosition();
         }
 
         public void Reset()
@@ -61,13 +63,15 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _headsUpDisplay.UpdateTimer(0);
             _headsUpDisplay.UpdateStepsCount(0);
             _inputStateProvider.SetEnabled(true);
+            IPlayer player = _playerFactory.GetPlayer();
+            player.ResetPosition();
         }
 
         public void Stop()
         {
             _isEnabled = false;
             _pauseProcessor.RemovePausable(this);
-            _playerMovementSystem.OnMoved -= OnPlayerMoved;
+            _gameplayEventBus.UnSubscribe<PlayerDeathMessage>(OnPlayerDeath);
         }
 
         public void Tick()
@@ -87,35 +91,17 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _isEnabled = !isPaused;
         }
 
-        private void OnPlayerMoved(Vector2Int currentPosition)
+        private void OnPlayerDeath(PlayerDeathMessage playerDeathMessage)
         {
-            int stepsCount = _gameRuntimeDataContainer.AddPlayerStepsCount(_minimalPlayerStepCount);
-            _headsUpDisplay.UpdateStepsCount(stepsCount);
-            _gameRuntimeDataContainer.SetPlayerPosition(currentPosition);
-
-            if (IsPlayerOutOfMaze(currentPosition))
-            {
-                _inputStateProvider.SetEnabled(false);
-                _uiService.ShowWindow(ViewType.GameOver);
-
-                _isEnabled = false;
-            }
+            ShowGameOver();
         }
 
-        private bool IsPlayerOutOfMaze(Vector2Int currentPosition)
+        private void ShowGameOver()
         {
-            int mazeWidth = _mazeGenerator.MazeData.Width;
-            int mazeHeight = _mazeGenerator.MazeData.Height;
+            _inputStateProvider.SetEnabled(false);
+            _uiService.ShowWindow(ViewType.GameOver);
 
-            if (currentPosition.x < 0
-                || currentPosition.x >= mazeWidth
-                || currentPosition.y < 0
-                || currentPosition.y >= mazeHeight)
-            {
-                return true;
-            }
-
-            return false;
+            _isEnabled = false;
         }
     }
 }

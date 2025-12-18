@@ -25,9 +25,6 @@ namespace _Maze.CodeBase.Infrastructure
 
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.Register<IMazeRenderer, MazeRenderer>(Lifetime.Singleton);
-            builder.Register<IMazeGenerator, MazeGenerator>(Lifetime.Singleton);
-            builder.Register<IMazeFactory, MazeFactory>(Lifetime.Singleton);
             builder.Register<IPlayerFactory, PlayerFactory>(Lifetime.Singleton);
             builder.Register<IPlayerMovementSystem, IInitializable, IDisposable, PlayerMovementSystem>(Lifetime.Singleton);
             builder.Register<IGameSessionRunner, GameSessionRunner>(Lifetime.Singleton);
@@ -45,6 +42,7 @@ namespace _Maze.CodeBase.Infrastructure
             builder.Register<IViewController, IHeadsUpDisplay, HeadsUpDisplayUiController>(Lifetime.Singleton);
             builder.Register<IGameRuntimeDataContainer, GameRuntimeDataContainerContainer>(Lifetime.Singleton);
             builder.Register<IGameConfiguration, GameConfiguration>(Lifetime.Singleton);
+            builder.Register<IGameplayEventBus, GameplayEventBus>(Lifetime.Singleton);
 
             builder.RegisterComponent(_monoBehavioursProvider).AsImplementedInterfaces();
         }

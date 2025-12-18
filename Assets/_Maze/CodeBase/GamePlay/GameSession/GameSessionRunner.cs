@@ -11,84 +11,53 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 {
     public class GameSessionRunner : IGameSessionRunner
     {
-        private readonly IMazeRenderer _mazeRenderer;
-        private readonly IMazeGenerator _mazeGenerator;
         private readonly IPlayerFactory _playerFactory;
-        private readonly IMazeFactory _mazeFactory;
-        private readonly IPlayerMovementSystem _movementSystem;
         private readonly ICameraFollowSystem _cameraFollowSystem;
         private readonly IGamePlayProcessor _gamePlayProcessor;
         private readonly IMonoBehavioursProvider _monoBehavioursProvider;
-        private readonly IPlayerMovementSystem _playerMovementSystem;
         private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IGamePauseProcessor _gamePauseProcessor;
 
-        public GameSessionRunner(IMazeRenderer mazeRenderer,
-            IMazeGenerator mazeGenerator,
-            IPlayerFactory playerFactory,
-            IMazeFactory mazeFactory,
-            IPlayerMovementSystem movementSystem,
+        public GameSessionRunner(IPlayerFactory playerFactory,
             ICameraFollowSystem cameraFollowSystem,
             IGamePlayProcessor gamePlayProcessor,
             IMonoBehavioursProvider monoBehavioursProvider,
-            IPlayerMovementSystem playerMovementSystem,
             IGameRuntimeDataContainer gameRuntimeDataContainer,
             IGamePauseProcessor gamePauseProcessor)
         {
-            _mazeRenderer = mazeRenderer;
-            _mazeGenerator = mazeGenerator;
             _playerFactory = playerFactory;
-            _mazeFactory = mazeFactory;
-            _movementSystem = movementSystem;
             _cameraFollowSystem = cameraFollowSystem;
             _gamePlayProcessor = gamePlayProcessor;
             _monoBehavioursProvider = monoBehavioursProvider;
-            _playerMovementSystem = playerMovementSystem;
             _gameRuntimeDataContainer = gameRuntimeDataContainer;
             _gamePauseProcessor = gamePauseProcessor;
         }
 
         public async void StartGame(GameProgressData data, bool loadGameProgressData = false)
         {
-            await _mazeFactory.LoadReferences();
             await _playerFactory.LoadPlayerReference();
 
             _gamePauseProcessor.Initialize();
-
             ShiftMazeSpawnPoint(data.MazeData);
-            _mazeGenerator.GenerateMaze(data.MazeData);
-            _mazeRenderer.RenderWalls();
 
-            Vector2Int playerPos = loadGameProgressData
-                ? new Vector2Int(data.PlayerProgress.PositionX, data.PlayerProgress.PositionY)
-                : _mazeGenerator.GetCentralPosition();
+            IPlayer player = _playerFactory.CreatePlayer(Vector2.zero, _monoBehavioursProvider.PlayerSpawnPoint);
 
-            PlayerView player = _playerFactory.CreatePlayer(playerPos, _monoBehavioursProvider.PlayerSpawnPoint);
-
-            _movementSystem.SetPlayerView(player);
-            _cameraFollowSystem.Initialize(player.transform);
+            _cameraFollowSystem.Initialize(player.View.transform);
             _gamePlayProcessor.Run();
         }
 
         public void RestartGame()
         {
             ResetPlayerProgress();
-            _mazeGenerator.GenerateMaze(_gameRuntimeDataContainer.GetGameProgressData().MazeData);
-            _mazeRenderer.RenderWalls();
             _gamePlayProcessor.Reset();
 
-            Vector2Int playerStartPos = _mazeGenerator.GetCentralPosition();
-            PlayerView player = _playerFactory.GetPlayerView();
+            IPlayer player = _playerFactory.GetPlayer();
 
             if (player == null)
             {
-                player = _playerFactory.CreatePlayer(playerStartPos, _monoBehavioursProvider.MazeSpawnPoint);
-                _cameraFollowSystem.Initialize(player.transform);
+                player = _playerFactory.CreatePlayer(Vector2.zero, _monoBehavioursProvider.MazeSpawnPoint);
+                _cameraFollowSystem.Initialize(player.View.transform);
             }
-
-            _movementSystem.SetPlayerView(player);
-            _movementSystem.SetStartPoint(playerStartPos);
-            player.transform.localPosition = new Vector2(playerStartPos.x, playerStartPos.y);
         }
 
         public void EndGame()
@@ -98,7 +67,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
             _playerFactory.DestroyPlayerView();
             _gamePauseProcessor.Dispose();
-            _mazeFactory.DestroyMazeEnvironment();
         }
 
         private void ShiftMazeSpawnPoint(MazeData mazeData)

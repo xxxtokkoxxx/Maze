@@ -1,6 +1,5 @@
 using System;
 using _Maze.CodeBase.Extensions;
-using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.Input;
 using DG.Tweening;
@@ -13,100 +12,61 @@ namespace _Maze.CodeBase.GamePlay.Player
 {
     public class PlayerMovementSystem : IPlayerMovementSystem, IPauseable, IInitializable, IDisposable
     {
-        public event Action<Vector2Int> OnMoved;
-
         private float _moveTimer;
-        private float _moveDuration = 0.35f;
-
-        private PlayerView _playerView;
-        private Vector2Int _currentPosition;
+        private bool IsPaysed;
+        private IPlayer _playerView;
 
         private readonly IInputStateProvider _inputStateProvider;
-        private readonly IMazeGenerator _mazeGenerator;
         private readonly IGamePauseProcessor _gamePauseProcessor;
-        private bool _isEnabled = true;
+        private readonly IPlayerFactory _playerFactory;
 
-        public PlayerMovementSystem(IInputStateProvider inputStateProvider,
-            IMazeGenerator mazeGenerator, IGamePauseProcessor gamePauseProcessor)
+        public PlayerMovementSystem(IInputStateProvider inputStateProvider, IGamePauseProcessor gamePauseProcessor, IPlayerFactory playerFactory)
         {
             _inputStateProvider = inputStateProvider;
-            _mazeGenerator = mazeGenerator;
             _gamePauseProcessor = gamePauseProcessor;
+            _playerFactory = playerFactory;
         }
 
         public void Initialize()
         {
-            _isEnabled = true;
             _gamePauseProcessor.AddPausable(this);
             _inputStateProvider.OnPlayerMovement += OnMove;
         }
 
         public void Dispose()
         {
-            _isEnabled = false;
             _gamePauseProcessor.RemovePausable(this);
             _inputStateProvider.OnPlayerMovement -= OnMove;
         }
 
-        public void SetPlayerView(PlayerView playerTransform)
-        {
-            _playerView = playerTransform;
-        }
-
-        public void SetStartPoint(Vector2Int position)
-        {
-            _currentPosition = position;
-        }
-
         private void OnMove(Vector2 direction)
         {
-            RaycastHit2D result = Physics2D.Raycast(_playerView.RaycastOffset, direction);
+            if (IsPaysed)
+                return;
+
+            if (_playerView == null)
+            {
+                _playerView = _playerFactory.GetPlayer();
+            }
+
+            Vector3 playerPos = _playerView.View.transform.position;
+            RaycastHit2D result = Physics2D.Raycast(playerPos, direction, Mathf.Infinity);
             if (result.collider != null)
             {
-                float movementTime = Vector2.Distance(_playerView.transform.position, result.point) * 0.05f;
+                float movementTime = Vector2.Distance(playerPos, result.point) * 0.05f;
 
-                TweenerCore<Vector3, Vector3, VectorOptions> moveAnima = _playerView.transform
+                TweenerCore<Vector3, Vector3, VectorOptions> moveAnima = _playerView.View.transform
                     .DOMove(new Vector2(result.point.x - _playerView.Visuals.bounds.size.x / 2 * direction.x,
-                            result.point.y - _playerView.Visuals.bounds.size.y / 2 * direction.y), movementTime);
+                        result.point.y - _playerView.Visuals.bounds.size.y / 2 * direction.y), movementTime);
 
                 _playerView.PlayJumpAnimation(movementTime);
                 _playerView.SetVisualsDirection(direction.ToDirection());
-
-                moveAnima.onComplete += () =>
-                {
-                };
             }
         }
 
         public void SetPaused(bool isPaused)
         {
-            _isEnabled = !isPaused;
-        }
-
-        public Vector2Int GetCurrentPositionPoint()
-        {
-            return _currentPosition;
-        }
-
-        private void MoveTo(Vector2Int direction)
-        {
-            if (direction != Vector2Int.zero)
-            {
-                if (!_mazeGenerator.IsWallInFront(_currentPosition, direction))
-                {
-                    Vector2Int nextPosition = new Vector2Int(_currentPosition.x + direction.x,
-                        _currentPosition.y + direction.y);
-                    SetPositionOnCell(nextPosition);
-                    _moveTimer = _moveDuration;
-                    OnMoved?.Invoke(_currentPosition);
-                }
-            }
-        }
-
-        private void SetPositionOnCell(Vector2Int position)
-        {
-            _currentPosition = position;
-            _playerView.transform.DOLocalMove(new Vector3(position.x, position.y, 0f), _moveDuration);
+            IsPaysed = isPaused;
         }
     }
 }

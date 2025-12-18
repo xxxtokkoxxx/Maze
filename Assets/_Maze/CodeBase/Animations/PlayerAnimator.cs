@@ -1,4 +1,5 @@
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace _Maze.CodeBase.Animations
@@ -7,11 +8,19 @@ namespace _Maze.CodeBase.Animations
     {
         [SerializeField] private Animator _animator;
 
+        [Button]
         public void PlayMove(bool move)
         {
             _animator.SetBool(PlayerAnimatorHashes.Move, move);
         }
 
+        [Button]
+        public void PlayIdle()
+        {
+            _animator.SetTrigger(PlayerAnimatorHashes.Idle);
+        }
+
+        [Button]
         public void PlayJump(float duration)
         {
             float baseLength = _animator.runtimeAnimatorController
@@ -22,16 +31,26 @@ namespace _Maze.CodeBase.Animations
 
             _animator.SetTrigger(PlayerAnimatorHashes.Jump);
         }
+
+        [Button]
+        public void PlayDeath()
+        {
+            _animator.SetTrigger(PlayerAnimatorHashes.Death);
+        }
     }
 
     public class PlayerAnimatorHashes
     {
         private const string MoveCondition = "Move";
         private const string JumpCondition = "Jump";
+        private const string IdleCondition = "Idle";
         private const string SpeedCondition = "Speed";
+        private const string DeathCondition = "Death";
 
         public static readonly int Move = Animator.StringToHash(MoveCondition);
+        public static readonly int Idle = Animator.StringToHash(IdleCondition);
         public static readonly int Jump = Animator.StringToHash(JumpCondition);
         public static readonly int Speed = Animator.StringToHash(SpeedCondition);
+        public static readonly int Death = Animator.StringToHash(DeathCondition);
     }
 }

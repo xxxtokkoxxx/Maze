@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using _Maze.CodeBase.Infrastructure.ResourcesManagement;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.Player
 {
@@ -10,10 +12,12 @@ namespace _Maze.CodeBase.GamePlay.Player
         private PlayerView _playerView;
 
         private readonly IAssetsLoaderService _assetsLoaderService;
+        private readonly IObjectResolver _resolver;
 
-        public PlayerFactory(IAssetsLoaderService assetsLoaderService)
+        public PlayerFactory(IAssetsLoaderService assetsLoaderService, IObjectResolver resolver)
         {
             _assetsLoaderService = assetsLoaderService;
+            _resolver = resolver;
         }
 
         public async Task LoadPlayerReference()
@@ -23,9 +27,9 @@ namespace _Maze.CodeBase.GamePlay.Player
             _playerViewReference = loadingTask.Result;
         }
 
-        public PlayerView CreatePlayer(Vector2 position, Transform parent)
+        public IPlayer CreatePlayer(Vector2 position, Transform parent)
         {
-            _playerView = Object.Instantiate(_playerViewReference, position, Quaternion.identity, parent)
+            _playerView = _resolver.Instantiate(_playerViewReference, position, Quaternion.identity, parent)
                 .GetComponent<PlayerView>();
 
             _playerView.transform.localPosition = Vector2.zero;
@@ -33,7 +37,7 @@ namespace _Maze.CodeBase.GamePlay.Player
             return _playerView;
         }
 
-        public PlayerView GetPlayerView()
+        public IPlayer GetPlayer()
         {
             return _playerView;
         }
