@@ -16,7 +16,6 @@ namespace _Maze.CodeBase.GamePlay.Player
         private int _health = 1;
         private IGameplayEventBus _gameplayEventBus;
 
-        public Vector2 RaycastOffset => _raycastOffset.transform.position;
         public SpriteRenderer Visuals => _playerVisuals;
 
         public GameObject View => gameObject;
@@ -30,6 +29,11 @@ namespace _Maze.CodeBase.GamePlay.Player
         public void PlayJumpAnimation(float duration)
         {
             _playerAnimator.PlayJump(duration);
+        }
+
+        public void PlayLevelCompletionAnimation()
+        {
+            _playerAnimator.PlayDisappearance();
         }
 
         public void SetVisualsDirection(Direction direction)

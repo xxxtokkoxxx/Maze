@@ -5,6 +5,7 @@ using _Maze.CodeBase.GamePlay.GameSession;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
+using _Maze.CodeBase.Infrastructure.EventBus;
 using _Maze.CodeBase.Infrastructure.ResourcesManagement;
 using _Maze.CodeBase.Input;
 using _Maze.CodeBase.Progress;
@@ -30,7 +31,7 @@ namespace _Maze.CodeBase.Infrastructure
             builder.Register<IGameSessionRunner, GameSessionRunner>(Lifetime.Singleton);
             builder.Register<IInputStateProvider, InputStateProvider>(Lifetime.Singleton);
             builder.Register<ICameraFollowSystem, ITickable, CameraFollowSystem>(Lifetime.Singleton);
-            builder.Register<IGamePlayProcessor, ITickable, GamePlayProcessor>(Lifetime.Singleton);
+            builder.Register<IGamePlayProcessor, GamePlayProcessor>(Lifetime.Singleton);
             builder.Register<IAssetsLoaderService, AssetsLoaderService>(Lifetime.Singleton);
             builder.Register<IUIService, UIService>(Lifetime.Singleton);
             builder.Register<IUIViewsFactory, UIViewsFactory>(Lifetime.Singleton);

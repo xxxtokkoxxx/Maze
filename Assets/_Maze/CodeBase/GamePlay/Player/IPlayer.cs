@@ -8,8 +8,9 @@ namespace _Maze.CodeBase.GamePlay.Player
         void DoDamage(int damage);
         void ResetPosition();
         GameObject View { get; }
-        void PlayJumpAnimation(float duration);
         SpriteRenderer Visuals { get; }
         void SetVisualsDirection(Direction direction);
+        void PlayJumpAnimation(float duration);
+        void PlayLevelCompletionAnimation();
     }
 }

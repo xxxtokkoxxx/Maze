@@ -1,4 +1,4 @@
-using _Maze.CodeBase.GamePlay.Maze;
+using _Maze.CodeBase.GamePlay.Exit;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Infrastructure;
@@ -7,15 +7,12 @@ using _Maze.CodeBase.Progress;
 using _Maze.CodeBase.UI;
 using _Maze.CodeBase.UI.Hud;
 using UnityEngine;
-using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.GameSession
 {
-    public class GamePlayProcessor : IGamePlayProcessor, ITickable, IPauseable
+    public class GamePlayProcessor : IGamePlayProcessor, IPauseable
     {
-        private float _elapsedTime;
         private bool _isEnabled;
-        private int _minimalPlayerStepCount = 1;
 
         private readonly IInputStateProvider _inputStateProvider;
         private readonly IUIService _uiService;
@@ -49,17 +46,16 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
             _uiService.ShowWindow(ViewType.Hud);
             _isEnabled = true;
-            _elapsedTime = _gameRuntimeDataContainer.GetSessionTime();
             _pauseProcessor.AddPausable(this);
             _inputStateProvider.SetEnabled(true);
             _gameplayEventBus.Subscribe<PlayerDeathMessage>(OnPlayerDeath);
+            _gameplayEventBus.Subscribe<LevelCompletedMessage>(OnLevelCompleted);
             IPlayer player = _playerFactory.GetPlayer();
             player.ResetPosition();
         }
 
         public void Reset()
         {
-            _elapsedTime = 0;
             _headsUpDisplay.UpdateTimer(0);
             _headsUpDisplay.UpdateStepsCount(0);
             _inputStateProvider.SetEnabled(true);
@@ -74,21 +70,14 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _gameplayEventBus.UnSubscribe<PlayerDeathMessage>(OnPlayerDeath);
         }
 
-        public void Tick()
-        {
-            if (!_isEnabled)
-            {
-                return;
-            }
-
-            _elapsedTime += Time.deltaTime;
-            _gameRuntimeDataContainer.SetSessionTime(_elapsedTime);
-            _headsUpDisplay.UpdateTimer(_elapsedTime);
-        }
-
         public void SetPaused(bool isPaused)
         {
             _isEnabled = !isPaused;
+        }
+
+        private void OnLevelCompleted(LevelCompletedMessage levelCompleted)
+        {
+            Debug.Log("Level completed");
         }
 
         private void OnPlayerDeath(PlayerDeathMessage playerDeathMessage)

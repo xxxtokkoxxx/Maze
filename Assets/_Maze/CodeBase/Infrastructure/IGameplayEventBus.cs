@@ -1,4 +1,5 @@
 using System;
+using _Maze.CodeBase.Infrastructure.EventBus;
 
 namespace _Maze.CodeBase.Infrastructure
 {

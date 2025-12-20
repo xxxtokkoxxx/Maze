@@ -1,6 +1,6 @@
-﻿namespace _Maze.CodeBase.Layers
+﻿namespace _Maze.CodeBase.LayersAndTahs
 {
-    public class Layer
+    public class Layers
     {
         public const string Wall = "Wall";
         public const string Environment = "Environment";

@@ -37,6 +37,12 @@ namespace _Maze.CodeBase.Animations
         {
             _animator.SetTrigger(PlayerAnimatorHashes.Death);
         }
+
+        [Button]
+        public void PlayDisappearance()
+        {
+            _animator.SetTrigger(PlayerAnimatorHashes.Disappear);
+        }
     }
 
     public class PlayerAnimatorHashes
@@ -46,11 +52,13 @@ namespace _Maze.CodeBase.Animations
         private const string IdleCondition = "Idle";
         private const string SpeedCondition = "Speed";
         private const string DeathCondition = "Death";
+        private const string DisappearCondition = "Disappear";
 
         public static readonly int Move = Animator.StringToHash(MoveCondition);
         public static readonly int Idle = Animator.StringToHash(IdleCondition);
         public static readonly int Jump = Animator.StringToHash(JumpCondition);
         public static readonly int Speed = Animator.StringToHash(SpeedCondition);
         public static readonly int Death = Animator.StringToHash(DeathCondition);
+        public static readonly int Disappear = Animator.StringToHash(DisappearCondition);
     }
 }

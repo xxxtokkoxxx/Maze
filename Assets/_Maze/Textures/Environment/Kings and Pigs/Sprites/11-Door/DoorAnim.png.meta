@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: dceb8386ed69f044490f0a46abe8a54d
+guid: 2f30533d9d667894ca00ba99a7428adf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5766932301440263773
-    second: Opening (46x56)_0
+      213: -1455096403836856330
+    second: image (2)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Opening (46x56)_0
+      name: image (2)_0
       rect:
         serializedVersion: 2
         x: 0
@@ -139,16 +139,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 1ec81631ed1f8204cb3e3e68cf1282a6
-      internalID: -1721129517
+      spriteID: 6f71b57b7857ecbe0800000000000000
+      internalID: -1455096403836856330
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Opening (46x56)_1
+      name: image (2)_1
       rect:
         serializedVersion: 2
         x: 46
@@ -163,14 +163,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: efe906231b63494419b7753576ce9d86
-      internalID: -256482987
+      spriteID: 747f058f3cbd2e04a80980d4b8a044a9
+      internalID: 1208672833
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Opening (46x56)_2
+      name: image (2)_2
       rect:
         serializedVersion: 2
         x: 92
@@ -185,14 +185,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c2ea9a5b63c000340807c3431645d176
-      internalID: 914122875
+      spriteID: 29653ce2f61adae41a9c963552c1e2ac
+      internalID: -1484901947
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Opening (46x56)_3
+      name: image (2)_3
       rect:
         serializedVersion: 2
         x: 138
@@ -207,14 +207,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6ba34da581a35d3488a58afb84f26658
-      internalID: -789383322
+      spriteID: 89d2db0ac03d5d44d820df0280e1f799
+      internalID: -488011747
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Opening (46x56)_4
+      name: image (2)_4
       rect:
         serializedVersion: 2
         x: 184
@@ -229,8 +229,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e6ac97fa0114d194d98ead5d7e7616ad
-      internalID: 1563154256
+      spriteID: b77d8a17e1e10eb419438a8cb401ce90
+      internalID: 953556295
       vertices: []
       indices: 
       edges: []
@@ -239,7 +239,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 33d0041f5e5d4194788546a831faabb8
+    spriteID: bdcb1da0bf70ae14297780bab9c0ad5e
     internalID: 0
     vertices: []
     indices: 
@@ -249,11 +249,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Opening (46x56)_0: -1721129517
-      Opening (46x56)_1: -256482987
-      Opening (46x56)_2: 914122875
-      Opening (46x56)_3: -789383322
-      Opening (46x56)_4: 1563154256
+      image (2)_0: -1455096403836856330
+      image (2)_1: 1208672833
+      image (2)_2: -1484901947
+      image (2)_3: -488011747
+      image (2)_4: 953556295
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

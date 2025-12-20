@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace _Maze.CodeBase.Infrastructure
+namespace _Maze.CodeBase.Infrastructure.EventBus
 {
     public class GameplayEventBus : IGameplayEventBus
     {
@@ -50,10 +50,5 @@ namespace _Maze.CodeBase.Infrastructure
                 }
             }
         }
-    }
-
-    public interface IGameplayEvent
-    {
-
     }
 }
