@@ -54,10 +54,6 @@ namespace _Maze.CodeBase.UI.MainMenu
                 View.Initialize(_callbacks);
             }
 
-            View.UpdateExistsCountText(_mazeData.ExitsCount);
-            View.UpdateMazeWidthText(_mazeData.Width);
-            View.UpdateMazeHeightText(_mazeData.Height);
-
             SetLoadGameButtonEnabled();
         }
 
@@ -83,18 +79,12 @@ namespace _Maze.CodeBase.UI.MainMenu
 
             _callbacks.OnStartGame += StartGame;
             _callbacks.OnLoadGame += LoadGame;
-            _callbacks.OnSetMazeWidth += SetMazeWidth;
-            _callbacks.OnSetMazeHeight += SetMazeHeight;
-            _callbacks.OnSetExistsCount += SetExistsCount;
         }
 
         private void Unsubscribe()
         {
             _callbacks.OnStartGame -= StartGame;
             _callbacks.OnLoadGame -= LoadGame;
-            _callbacks.OnSetMazeWidth -= SetMazeWidth;
-            _callbacks.OnSetMazeHeight -= SetMazeHeight;
-            _callbacks.OnSetExistsCount -= SetExistsCount;
 
             _subscribed = false;
         }
@@ -120,30 +110,6 @@ namespace _Maze.CodeBase.UI.MainMenu
             }
 
             _uiService.HideWindow(ViewType);
-        }
-
-        private void SetExistsCount(int existsCount)
-        {
-            _mazeData.ExitsCount = Math.Clamp(_mazeData.ExitsCount + existsCount, _gameConfiguration.MinExists,
-                _gameConfiguration.MaxExists);
-
-            View.UpdateExistsCountText(_mazeData.ExitsCount);
-        }
-
-        private void SetMazeWidth(int mazeWidth)
-        {
-            _mazeData.Width = Math.Clamp(_mazeData.Width + mazeWidth, _gameConfiguration.MinMazeSize.x,
-                _gameConfiguration.MaxMazeSize.x);
-
-            View.UpdateMazeWidthText(_mazeData.Width);
-        }
-
-        private void SetMazeHeight(int mazeHeight)
-        {
-            _mazeData.Height = Math.Clamp(_mazeData.Height + mazeHeight, _gameConfiguration.MinMazeSize.y,
-                _gameConfiguration.MaxMazeSize.y);
-
-            View.UpdateMazeHeightText(_mazeData.Height);
         }
 
         private void SetLoadGameButtonEnabled()

@@ -53,7 +53,7 @@ namespace _Maze.CodeBase.GamePlay.Player
             RaycastHit2D result = Physics2D.Raycast(playerPos, direction, Mathf.Infinity);
             if (result.collider != null)
             {
-                float movementTime = Vector2.Distance(playerPos, result.point) * 0.05f;
+                float movementTime = Vector2.Distance(playerPos, result.point) * 0.025f;
 
                 TweenerCore<Vector3, Vector3, VectorOptions> moveAnima = _playerView.View.transform
                     .DOMove(new Vector2(result.point.x - _playerView.Visuals.bounds.size.x / 2 * direction.x,
