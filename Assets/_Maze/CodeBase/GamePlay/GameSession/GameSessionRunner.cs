@@ -35,7 +35,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         public async void StartGame(GameProgressData data, bool loadGameProgressData = false)
         {
-            await _playerFactory.LoadPlayerReference();
+            await _playerFactory.SetPlayerReference();
 
             _gamePauseProcessor.Initialize();
             ShiftMazeSpawnPoint(data.MazeData);

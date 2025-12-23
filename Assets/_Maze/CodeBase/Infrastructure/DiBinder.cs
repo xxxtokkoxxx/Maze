@@ -1,6 +1,7 @@
 using System;
 using _Maze.CodeBase.Configuration;
 using _Maze.CodeBase.GamePlay.Camera;
+using _Maze.CodeBase.GamePlay.Environment;
 using _Maze.CodeBase.GamePlay.GameSession;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.GamePlay.Pause;
@@ -23,6 +24,7 @@ namespace _Maze.CodeBase.Infrastructure
     public class DiBinder : LifetimeScope
     {
         [SerializeField] private MonoBehavioursProvider _monoBehavioursProvider;
+        [SerializeField] private LevelElementsContainer _levelEnvironmentContainer;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -44,6 +46,7 @@ namespace _Maze.CodeBase.Infrastructure
             builder.Register<IGameRuntimeDataContainer, GameRuntimeDataContainerContainer>(Lifetime.Singleton);
             builder.Register<IGameConfiguration, GameConfiguration>(Lifetime.Singleton);
             builder.Register<IGameplayEventBus, GameplayEventBus>(Lifetime.Singleton);
+            builder.Register<ILevelElementsContainer, LevelElementsContainer>(Lifetime.Singleton);
 
             builder.RegisterComponent(_monoBehavioursProvider).AsImplementedInterfaces();
         }

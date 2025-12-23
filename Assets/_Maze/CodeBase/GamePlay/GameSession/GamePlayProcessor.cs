@@ -1,3 +1,4 @@
+using _Maze.CodeBase.GamePlay.Environment;
 using _Maze.CodeBase.GamePlay.Exit;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
@@ -20,7 +21,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IHeadsUpDisplay _headsUpDisplay;
         private readonly IGamePauseProcessor _pauseProcessor;
         private readonly IGameplayEventBus _gameplayEventBus;
-        private readonly IPlayerFactory _playerFactory;
+        private readonly ILevelElementsContainer _levelEnvironment;
 
         public GamePlayProcessor(IInputStateProvider inputStateProvider,
             IUIService uiService,
@@ -28,7 +29,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             IHeadsUpDisplay headsUpDisplay,
             IGamePauseProcessor pauseProcessor,
             IGameplayEventBus gameplayEventBus,
-            IPlayerFactory playerFactory)
+            ILevelElementsContainer levelEnvironment)
         {
             _inputStateProvider = inputStateProvider;
             _uiService = uiService;
@@ -36,7 +37,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _headsUpDisplay = headsUpDisplay;
             _pauseProcessor = pauseProcessor;
             _gameplayEventBus = gameplayEventBus;
-            _playerFactory = playerFactory;
+            _levelEnvironment = levelEnvironment;
         }
 
         public void Run()
@@ -50,7 +51,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _inputStateProvider.SetEnabled(true);
             _gameplayEventBus.Subscribe<PlayerDeathMessage>(OnPlayerDeath);
             _gameplayEventBus.Subscribe<LevelCompletedMessage>(OnLevelCompleted);
-            IPlayer player = _playerFactory.GetPlayer();
+            IPlayer player = _levelEnvironment.GetPlayer();
             player.ResetPosition();
         }
 
@@ -59,7 +60,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _headsUpDisplay.UpdateTimer(0);
             _headsUpDisplay.UpdateStepsCount(0);
             _inputStateProvider.SetEnabled(true);
-            IPlayer player = _playerFactory.GetPlayer();
+            IPlayer player = _levelEnvironment.GetPlayer();
             player.ResetPosition();
         }
 
