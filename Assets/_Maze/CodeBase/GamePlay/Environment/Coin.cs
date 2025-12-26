@@ -1,5 +1,5 @@
+using _Maze.CodeBase.Animations;
 using _Maze.CodeBase.Infrastructure;
-using _Maze.CodeBase.Infrastructure.EventBus;
 using UnityEngine;
 using VContainer;
 
@@ -7,6 +7,8 @@ namespace _Maze.CodeBase.GamePlay.Environment
 {
     public class Coin : MonoBehaviour
     {
+        [SerializeField] private CoinAnimator _coinAnimator;
+
         private IGameplayEventBus _gameplayEventBus;
 
         [Inject]
@@ -19,11 +21,7 @@ namespace _Maze.CodeBase.GamePlay.Environment
         public void OnTriggerEnter2D(Collider2D other)
         {
             _gameplayEventBus.Publish(new PickCoinEvent());
+            _coinAnimator.PlayPickCoin(true);
         }
-    }
-
-    public class PickCoinEvent : IGameplayEvent
-    {
-
     }
 }

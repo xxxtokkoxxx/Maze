@@ -12,6 +12,7 @@
         #region Labels
 
         public const string UIViews = "UIViews";
+        public const string Scopes = "Scopes";
 
         #endregion
     }

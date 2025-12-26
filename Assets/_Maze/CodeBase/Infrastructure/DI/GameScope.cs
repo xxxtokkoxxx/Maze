@@ -19,9 +19,11 @@ using VContainer.Unity;
 
 namespace _Maze.CodeBase.Infrastructure.DI
 {
-    public class GameInstaller : LifetimeScope
+    public class GameScope : BaseScope
     {
         [SerializeField] private LevelElementsContainer _levelEnvironmentContainer;
+
+        public override Scope Scope => Scope.Game;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -29,7 +31,7 @@ namespace _Maze.CodeBase.Infrastructure.DI
 
             builder.Register<IPlayerFactory, PlayerFactory>(Lifetime.Singleton);
             builder.Register<IPlayerMovementSystem, IInitializable, IDisposable, PlayerMovementSystem>(Lifetime.Singleton);
-            builder.Register<IGameSessionRunner, IInitializable, GameSessionRunner>(Lifetime.Singleton);
+            builder.Register<IGameSessionRunner, GameSessionRunner>(Lifetime.Singleton);
             builder.Register<IInputStateProvider, InputStateProvider>(Lifetime.Singleton);
             builder.Register<ICameraFollowSystem, ITickable, CameraFollowSystem>(Lifetime.Singleton);
             builder.Register<IGamePlayProcessor, GamePlayProcessor>(Lifetime.Singleton);

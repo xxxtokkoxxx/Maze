@@ -13,7 +13,7 @@ namespace _Maze.CodeBase.GamePlay.Player
     public class PlayerMovementSystem : IPlayerMovementSystem, IPauseable, IInitializable, IDisposable
     {
         private float _moveTimer;
-        private bool IsPaused;
+        private bool _isPaused;
         private IPlayer _playerView;
 
         private readonly IInputStateProvider _inputStateProvider;
@@ -31,7 +31,6 @@ namespace _Maze.CodeBase.GamePlay.Player
         {
             _gamePauseProcessor.AddPausable(this);
             _inputStateProvider.OnPlayerMovement += OnMove;
-            Debug.Log("initialize");
         }
 
         public void Dispose()
@@ -42,7 +41,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         private void OnMove(Vector2 direction)
         {
-            if (IsPaused)
+            if (_isPaused)
                 return;
 
             if (_playerView == null)
@@ -67,7 +66,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         public void SetPaused(bool isPaused)
         {
-            IsPaused = isPaused;
+            _isPaused = isPaused;
         }
     }
 }

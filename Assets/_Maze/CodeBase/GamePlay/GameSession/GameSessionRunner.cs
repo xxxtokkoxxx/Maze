@@ -2,11 +2,10 @@ using _Maze.CodeBase.GamePlay.Camera;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
 using UnityEngine;
-using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.GameSession
 {
-    public class GameSessionRunner : IGameSessionRunner, IInitializable
+    public class GameSessionRunner : IGameSessionRunner
     {
         private readonly IPlayerFactory _playerFactory;
         private readonly ICameraFollowSystem _cameraFollowSystem;
@@ -23,12 +22,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _gamePlayProcessor = gamePlayProcessor;
             _gamePauseProcessor = gamePauseProcessor;
             Debug.Log("call");
-        }
-
-        public void Initialize()
-        {
-            StartGame();
-            Debug.Log("initialize");
         }
 
         public void StartGame()

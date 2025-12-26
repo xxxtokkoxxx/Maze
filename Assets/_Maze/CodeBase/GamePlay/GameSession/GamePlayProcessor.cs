@@ -1,4 +1,3 @@
-using _Maze.CodeBase.GamePlay.Environment;
 using _Maze.CodeBase.GamePlay.Exit;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
@@ -19,21 +18,21 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IHeadsUpDisplay _headsUpDisplay;
         private readonly IGamePauseProcessor _pauseProcessor;
         private readonly IGameplayEventBus _gameplayEventBus;
-        private readonly ILevelElementsContainer _levelEnvironment;
+        private readonly IPlayerFactory _playerFactory;
 
         public GamePlayProcessor(IInputStateProvider inputStateProvider,
             IUIService uiService,
             IHeadsUpDisplay headsUpDisplay,
             IGamePauseProcessor pauseProcessor,
             IGameplayEventBus gameplayEventBus,
-            ILevelElementsContainer levelEnvironment)
+            IPlayerFactory playerFactory)
         {
             _inputStateProvider = inputStateProvider;
             _uiService = uiService;
             _headsUpDisplay = headsUpDisplay;
             _pauseProcessor = pauseProcessor;
             _gameplayEventBus = gameplayEventBus;
-            _levelEnvironment = levelEnvironment;
+            _playerFactory = playerFactory;
         }
 
         public void Run()
@@ -47,8 +46,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _inputStateProvider.SetEnabled(true);
             _gameplayEventBus.Subscribe<PlayerDeathMessage>(OnPlayerDeath);
             _gameplayEventBus.Subscribe<LevelCompletedMessage>(OnLevelCompleted);
-            IPlayer player = _levelEnvironment.GetPlayer();
-            player.ResetPosition();
         }
 
         public void Reset()
@@ -56,7 +53,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _headsUpDisplay.UpdateTimer(0);
             _headsUpDisplay.UpdateStepsCount(0);
             _inputStateProvider.SetEnabled(true);
-            IPlayer player = _levelEnvironment.GetPlayer();
+            IPlayer player = _playerFactory.GetPlayer();
             player.ResetPosition();
         }
 

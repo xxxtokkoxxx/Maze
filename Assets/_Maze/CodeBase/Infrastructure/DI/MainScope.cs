@@ -11,9 +11,10 @@ using VContainer.Unity;
 
 namespace _Maze.CodeBase.Infrastructure.DI
 {
-    public class MainInstaller : LifetimeScope
+    public class MainScope : BaseScope
     {
         [SerializeField] private MonoBehavioursProvider _monoBehavioursProvider;
+        public override Scope Scope => Scope.Main;
 
         protected override void Configure(IContainerBuilder builder)
         {

@@ -76,9 +76,8 @@ namespace _Maze.CodeBase.UI.MainMenu
 
         private async void StartGame()
         {
-            await _sceneLoaderService.LoadScene("Level_1");
-            
             UIService.HideWindow(ViewType);
+            await _gameStateMachine.Enter<GameLoadingState>();
         }
 
         private void LoadGame()

@@ -1,9 +1,5 @@
-using System.Threading.Tasks;
 using _Maze.CodeBase.GamePlay.Environment;
-using _Maze.CodeBase.Infrastructure.ResourcesManagement;
 using UnityEngine;
-using VContainer;
-using VContainer.Unity;
 
 namespace _Maze.CodeBase.GamePlay.Player
 {
@@ -12,18 +8,15 @@ namespace _Maze.CodeBase.GamePlay.Player
         private PlayerView _playerView;
 
         private readonly ILevelElementsContainer _levelElementsContainer;
-        private readonly IObjectResolver _resolver;
 
-        public PlayerFactory(ILevelElementsContainer levelElementsContainer, IObjectResolver resolver)
+        public PlayerFactory(ILevelElementsContainer levelElementsContainer)
         {
             _levelElementsContainer = levelElementsContainer;
-            _resolver = resolver;
         }
 
         public void SetPlayerReference()
         {
             _playerView = _levelElementsContainer.GetPlayer();
-            _resolver.InjectGameObject(_playerView.gameObject);
         }
 
         public IPlayer GetPlayer()

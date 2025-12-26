@@ -1,5 +1,7 @@
+using _Maze.CodeBase.Infrastructure.DI;
 using _Maze.CodeBase.Scenes;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace _Maze.CodeBase.Infrastructure.StateMachine
 {
@@ -16,6 +18,9 @@ namespace _Maze.CodeBase.Infrastructure.StateMachine
         public override async UniTask Enter()
         {
             await _sceneLoaderService.LoadScene("Level_1");
+            GameScope gameScope = GameObject.FindGameObjectWithTag("GameScope").GetComponent<GameScope>();
+            gameScope.Build();
+
             await GameStateMachine.Enter<GameLoopState>();
         }
     }
