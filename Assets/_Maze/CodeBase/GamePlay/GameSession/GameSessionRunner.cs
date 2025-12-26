@@ -22,11 +22,13 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _cameraFollowSystem = cameraFollowSystem;
             _gamePlayProcessor = gamePlayProcessor;
             _gamePauseProcessor = gamePauseProcessor;
+            Debug.Log("call");
         }
 
         public void Initialize()
         {
             StartGame();
+            Debug.Log("initialize");
         }
 
         public void StartGame()

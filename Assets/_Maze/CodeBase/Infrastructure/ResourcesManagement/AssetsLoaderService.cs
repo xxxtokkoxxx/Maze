@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -15,7 +16,7 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
     {
         private List<LoadedAsset> _cache = new();
 
-        public async Task<TAssetType> LoadAsset<TAssetType>(string path) where TAssetType : Object
+        public async UniTask<TAssetType> LoadAsset<TAssetType>(string path) where TAssetType : Object
         {
             bool assetExist = TryToGetAssetFromCache(path, out TAssetType asset);
 
@@ -41,7 +42,7 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
             return result;
         }
 
-        public async Task<IList<TAssetType>> LoadAssets<TAssetType>(string label)
+        public async UniTask<IList<TAssetType>> LoadAssets<TAssetType>(string label)
         {
             bool assetExist = TryToGetAssetFromCache(label, out IList<TAssetType> asset);
             AsyncOperationHandle<IList<GameObject>> loadWithIResourceLocations;

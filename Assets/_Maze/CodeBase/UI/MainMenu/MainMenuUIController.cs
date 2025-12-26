@@ -1,4 +1,5 @@
-﻿using _Maze.CodeBase.Progress;
+﻿using _Maze.CodeBase.Infrastructure.StateMachine;
+using _Maze.CodeBase.Progress;
 using _Maze.CodeBase.Scenes;
 
 namespace _Maze.CodeBase.UI.MainMenu
@@ -12,15 +13,18 @@ namespace _Maze.CodeBase.UI.MainMenu
         private readonly IUIViewsFactory _viewsFactory;
         private readonly ISaveLoadService _saveLoadService;
         private readonly ISceneLoaderService _sceneLoaderService;
+        private readonly IGameStateMachine _gameStateMachine;
 
         public MainMenuUIController(IUIViewsFactory viewsFactory,
             ISaveLoadService saveLoadService,
             IUIService uiService,
-            ISceneLoaderService sceneLoaderService) : base(uiService)
+            ISceneLoaderService sceneLoaderService,
+            IGameStateMachine gameStateMachine) : base(uiService)
         {
             _viewsFactory = viewsFactory;
             _saveLoadService = saveLoadService;
             _sceneLoaderService = sceneLoaderService;
+            _gameStateMachine = gameStateMachine;
         }
 
         public override ViewType ViewType => ViewType.MainMenu;
@@ -73,7 +77,7 @@ namespace _Maze.CodeBase.UI.MainMenu
         private async void StartGame()
         {
             await _sceneLoaderService.LoadScene("Level_1");
-
+            
             UIService.HideWindow(ViewType);
         }
 

@@ -17,11 +17,10 @@ namespace _Maze.CodeBase.Scenes
 
         public async UniTask LoadScene(string sceneName)
         {
-            await SceneManager.LoadSceneAsync(sceneName);
-
-            // using (LifetimeScope.EnqueueParent(_monoBehavioursProvider.LifetimeScope))
-            // {
-            // }
+            using (LifetimeScope.EnqueueParent(_monoBehavioursProvider.LifetimeScope))
+            {
+                await SceneManager.LoadSceneAsync(sceneName);
+            }
         }
     }
 }

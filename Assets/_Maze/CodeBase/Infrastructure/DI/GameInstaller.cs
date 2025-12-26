@@ -1,11 +1,13 @@
 ﻿using System;
 using _Maze.CodeBase.Configuration;
+using _Maze.CodeBase.Extensions;
 using _Maze.CodeBase.GamePlay.Camera;
 using _Maze.CodeBase.GamePlay.Environment;
 using _Maze.CodeBase.GamePlay.GameSession;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Infrastructure.EventBus;
+using _Maze.CodeBase.Infrastructure.StateMachine;
 using _Maze.CodeBase.Input;
 using _Maze.CodeBase.UI;
 using _Maze.CodeBase.UI.GameOver;
@@ -15,7 +17,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace _Maze.CodeBase.Infrastructure
+namespace _Maze.CodeBase.Infrastructure.DI
 {
     public class GameInstaller : LifetimeScope
     {
@@ -36,7 +38,9 @@ namespace _Maze.CodeBase.Infrastructure
             builder.Register<IGameplayEventBus, GameplayEventBus>(Lifetime.Singleton);
             builder.Register<IViewController, IInitializable, IDisposable, GameOverUiController>(Lifetime.Singleton);
             builder.Register<IViewController, IDisposable, IInitializable, PauseUIController>(Lifetime.Singleton);
-            builder.Register<IViewController, IHeadsUpDisplay, IInitializable, IDisposable, HeadsUpDisplayUiController>(Lifetime.Singleton);
+            builder.Register<IState, IInitializable, IDisposable, GameLoopState>(Lifetime.Singleton);
+            builder.Register<IViewController, IHeadsUpDisplay, IInitializable, IDisposable, HeadsUpDisplayUiController>(
+                Lifetime.Singleton);
         }
     }
 }

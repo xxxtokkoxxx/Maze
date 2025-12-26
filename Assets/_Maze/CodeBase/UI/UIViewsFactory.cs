@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using _Maze.CodeBase.Infrastructure;
 using _Maze.CodeBase.Infrastructure.ResourcesManagement;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -24,7 +24,7 @@ namespace _Maze.CodeBase.UI
             _monoBehaviourProvider = monoBehaviourProvider;
         }
 
-        public async Task LoadViews()
+        public async UniTask LoadViews()
         {
             IList<BaseView> views = await _loaderService.LoadAssets<BaseView>(AssetsDataPath.UIViews);
             _viewReferences = views;
