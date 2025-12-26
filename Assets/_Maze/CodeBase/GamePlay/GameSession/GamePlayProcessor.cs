@@ -4,7 +4,6 @@ using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
 using _Maze.CodeBase.Infrastructure;
 using _Maze.CodeBase.Input;
-using _Maze.CodeBase.Progress;
 using _Maze.CodeBase.UI;
 using _Maze.CodeBase.UI.Hud;
 using UnityEngine;
@@ -17,7 +16,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         private readonly IInputStateProvider _inputStateProvider;
         private readonly IUIService _uiService;
-        private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IHeadsUpDisplay _headsUpDisplay;
         private readonly IGamePauseProcessor _pauseProcessor;
         private readonly IGameplayEventBus _gameplayEventBus;
@@ -25,7 +23,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         public GamePlayProcessor(IInputStateProvider inputStateProvider,
             IUIService uiService,
-            IGameRuntimeDataContainer gameRuntimeDataContainer,
             IHeadsUpDisplay headsUpDisplay,
             IGamePauseProcessor pauseProcessor,
             IGameplayEventBus gameplayEventBus,
@@ -33,7 +30,6 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         {
             _inputStateProvider = inputStateProvider;
             _uiService = uiService;
-            _gameRuntimeDataContainer = gameRuntimeDataContainer;
             _headsUpDisplay = headsUpDisplay;
             _pauseProcessor = pauseProcessor;
             _gameplayEventBus = gameplayEventBus;

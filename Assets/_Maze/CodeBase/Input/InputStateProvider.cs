@@ -31,12 +31,6 @@ namespace _Maze.CodeBase.Input
             }
         }
 
-        public Vector2 GetMovementDirection()
-        {
-            Vector2 direction = _inputActions.Player.Move.ReadValue<Vector2>();
-            return direction;
-        }
-
         public void OnMove(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Started)

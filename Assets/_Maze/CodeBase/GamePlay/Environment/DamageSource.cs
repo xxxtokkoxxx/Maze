@@ -1,7 +1,7 @@
 using _Maze.CodeBase.GamePlay.Player;
 using UnityEngine;
 
-namespace _Maze.CodeBase.GamePlay.EnvironmentalHazards
+namespace _Maze.CodeBase.GamePlay.Environment
 {
     public class DamageSource : MonoBehaviour
     {

@@ -1,29 +1,23 @@
 ﻿using _Maze.CodeBase.GamePlay.GameSession;
-using _Maze.CodeBase.Progress;
 
 namespace _Maze.CodeBase.UI.GameOver
 {
-    public class GameOverUiController : BaseUiController<GameOverView>, IViewController
+    public class GameOverUiController : BaseUiController<GameOverView>
     {
         private bool _subscribed;
         private GameOverUICallbacks _callbacks;
 
         private readonly IGameSessionRunner _gameSessionRunner;
-        private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
-        private readonly IUIService _uiService;
         private readonly IUIViewsFactory _viewsFactory;
 
         public override ViewType ViewType => ViewType.GameOver;
 
          public GameOverUiController(IUIViewsFactory viewsFactory,
             IGameSessionRunner gameSessionRunner,
-            IGameRuntimeDataContainer gameRuntimeDataContainer,
-            IUIService uiService)
-        {
+            IUIService uiService) : base(uiService)
+         {
             _viewsFactory = viewsFactory;
             _gameSessionRunner = gameSessionRunner;
-            _gameRuntimeDataContainer = gameRuntimeDataContainer;
-            _uiService = uiService;
         }
 
         public override void Show()
@@ -35,8 +29,6 @@ namespace _Maze.CodeBase.UI.GameOver
                 View = _viewsFactory.CreateView<GameOverView>(ViewType.GameOver);
                 View.Initialize(_callbacks);
             }
-
-            View.SetGameResultsText(_gameRuntimeDataContainer.GetSessionTime(), _gameRuntimeDataContainer.GetPlayerStepsCount());
         }
 
         public override void Hide()
@@ -73,7 +65,7 @@ namespace _Maze.CodeBase.UI.GameOver
 
         private void RestartGame()
         {
-            _uiService.HideWindow(ViewType);
+            UIService.HideWindow(ViewType);
             _gameSessionRunner.RestartGame();
         }
 
@@ -81,9 +73,9 @@ namespace _Maze.CodeBase.UI.GameOver
         {
             _gameSessionRunner.EndGame();
 
-            _uiService.HideWindow(ViewType.Hud);
-            _uiService.HideWindow(ViewType.GameOver);
-            _uiService.ShowWindow(ViewType.MainMenu);
+            UIService.HideWindow(ViewType.Hud);
+            UIService.HideWindow(ViewType.GameOver);
+            UIService.ShowWindow(ViewType.MainMenu);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using _Maze.CodeBase.Infrastructure;
-using _Maze.CodeBase.Progress;
 using UnityEngine;
 
 namespace _Maze.CodeBase.UI.Hud
@@ -7,14 +6,11 @@ namespace _Maze.CodeBase.UI.Hud
     public class HeadsUpDisplayUiController : BaseUiController<HeadsUpDisplayView>, IHeadsUpDisplay
     {
         private readonly IUIViewsFactory _viewsFactory;
-        private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IMonoBehavioursProvider _monoBehavioursProvider;
 
-        public HeadsUpDisplayUiController(IUIViewsFactory uiViewsFactory,
-            IGameRuntimeDataContainer gameRuntimeDataContainer, IMonoBehavioursProvider monoBehavioursProvider)
+        public HeadsUpDisplayUiController(IUIViewsFactory uiViewsFactory, IMonoBehavioursProvider monoBehavioursProvider, IUIService uiService) : base(uiService)
         {
             _viewsFactory = uiViewsFactory;
-            _gameRuntimeDataContainer = gameRuntimeDataContainer;
             _monoBehavioursProvider = monoBehavioursProvider;
         }
 
@@ -27,9 +23,6 @@ namespace _Maze.CodeBase.UI.Hud
                 View = _viewsFactory.CreateView<HeadsUpDisplayView>(ViewType.Hud,
                     _monoBehavioursProvider.HUDSpawnPoint);
             }
-
-            UpdateStepsCount(_gameRuntimeDataContainer.GetPlayerStepsCount());
-            UpdateTimer(_gameRuntimeDataContainer.GetSessionTime());
         }
 
         public override void Hide()
@@ -39,7 +32,7 @@ namespace _Maze.CodeBase.UI.Hud
 
         public void UpdateStepsCount(int stepsCount)
         {
-            View.SetStepsCount(_gameRuntimeDataContainer.GetPlayerStepsCount());
+
         }
 
         public void UpdateTimer(float sessionTime)

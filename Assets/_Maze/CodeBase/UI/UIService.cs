@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace _Maze.CodeBase.UI
 {
     public class UIService : IUIService
     {
-        private IViewController[] _controllers;
+        private List<IViewController> _controllers = new();
         private List<IViewController> _activeControllers = new();
-
-        public void Initialize(IViewController[] viewControllers)
-        {
-            _controllers = viewControllers;
-        }
 
         public void ShowWindow(ViewType viewType)
         {
@@ -28,9 +24,28 @@ namespace _Maze.CodeBase.UI
             controller.Hide();
         }
 
+        public void RegisterController<TView>(BaseUiController<TView> uiController)
+            where TView : IView
+        {
+            if (_controllers.Contains(uiController))
+            {
+                Debug.LogError("Cannot register controllers more than once!");
+                return;
+            }
+
+            _controllers.Add(uiController);
+        }
+
+        public void UnregisterController<TView>(BaseUiController<TView> uiController)
+            where TView : IView
+        {
+            Debug.Log("unregister controller");
+            _controllers.Remove(uiController);
+        }
+
         private IViewController GetUiController(ViewType viewType)
         {
-            IViewController controller = _controllers.FirstOrDefault(a=>a.ViewType == viewType);
+            IViewController controller = _controllers.FirstOrDefault(a => a.ViewType == viewType);
 
             if (controller == null)
             {

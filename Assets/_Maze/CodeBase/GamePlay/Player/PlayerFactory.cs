@@ -23,7 +23,7 @@ namespace _Maze.CodeBase.GamePlay.Player
         public void SetPlayerReference()
         {
             _playerView = _levelElementsContainer.GetPlayer();
-            _resolver.Resolve(_playerView);
+            _resolver.InjectGameObject(_playerView.gameObject);
         }
 
         public IPlayer GetPlayer()

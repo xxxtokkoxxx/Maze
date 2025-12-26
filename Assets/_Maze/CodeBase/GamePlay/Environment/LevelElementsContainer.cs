@@ -5,12 +5,12 @@ namespace _Maze.CodeBase.GamePlay.Environment
 {
     public class LevelElementsContainer : MonoBehaviour, ILevelElementsContainer
     {
-        [SerializeField] private Transform _collectibles;
-        [SerializeField] private Transform _player;
-        
+        [SerializeField] private Transform _collectiblesTileMap;
+        [SerializeField] private Transform _playerTilemap;
+
         public PlayerView GetPlayer()
         {
-            return _player.GetComponentInChildren<IPlayer>();
+            return _playerTilemap.GetComponentInChildren<PlayerView>();
         }
     }
 }

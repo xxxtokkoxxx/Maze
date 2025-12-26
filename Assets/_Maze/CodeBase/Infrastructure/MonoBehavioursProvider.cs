@@ -1,5 +1,5 @@
-using _Maze.CodeBase.GamePlay.Maze;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace _Maze.CodeBase.Infrastructure
 {
@@ -9,12 +9,12 @@ namespace _Maze.CodeBase.Infrastructure
         [SerializeField] private Camera _cachedCamera;
         [SerializeField] private Transform _uiSpawnPoint;
         [SerializeField] private Transform _hudSpawnPoint;
-        [SerializeField] private Transform _playerSpawnPoint;
+        [SerializeField] private LifetimeScope _lifetimeScope;
 
         public Transform MazeSpawnPoint => _mazeSpawnPoint;
         public Camera CachedCamera => _cachedCamera;
         public Transform UISpawnPoint => _uiSpawnPoint;
         public Transform HUDSpawnPoint => _hudSpawnPoint;
-        public Transform PlayerSpawnPoint => _playerSpawnPoint;
+        public LifetimeScope LifetimeScope => _lifetimeScope;
     }
 }

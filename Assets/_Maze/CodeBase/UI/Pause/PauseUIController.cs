@@ -12,8 +12,6 @@ namespace _Maze.CodeBase.UI.Pause
         private readonly IGameSessionRunner _gameSessionRunner;
         private readonly ISaveLoadService _saveLoadService;
         private readonly IGamePauseProcessor _gamePauseProcessor;
-        private readonly IUIService _uiService;
-        private readonly IGameRuntimeDataContainer _gameRuntimeDataContainer;
         private readonly IUIViewsFactory _viewsFactory;
 
         public override ViewType ViewType => ViewType.Pause;
@@ -22,15 +20,12 @@ namespace _Maze.CodeBase.UI.Pause
             IGameSessionRunner gameSessionRunner,
             ISaveLoadService saveLoadService,
             IGamePauseProcessor gamePauseProcessor,
-            IUIService uiService,
-            IGameRuntimeDataContainer gameRuntimeDataContainer)
+            IUIService uiService) : base(uiService)
         {
             _viewsFactory = viewsFactory;
             _gameSessionRunner = gameSessionRunner;
             _saveLoadService = saveLoadService;
             _gamePauseProcessor = gamePauseProcessor;
-            _uiService = uiService;
-            _gameRuntimeDataContainer = gameRuntimeDataContainer;
         }
 
         public override void Show()
@@ -82,27 +77,27 @@ namespace _Maze.CodeBase.UI.Pause
 
         private void SaveGame()
         {
-            _saveLoadService.SaveGame(_gameRuntimeDataContainer.GetGameProgressData());
+
         }
 
         private void ResumeGame()
         {
             _gamePauseProcessor.SetPaused(false);
-            _uiService.HideWindow(ViewType);
+            UIService.HideWindow(ViewType);
         }
 
         private void RestartGame()
         {
             _gameSessionRunner.RestartGame();
             _gamePauseProcessor.SetPaused(false);
-            _uiService.HideWindow(ViewType);
+            UIService.HideWindow(ViewType);
         }
 
         private void GoToMainMenu()
         {
-            _uiService.HideWindow(ViewType.Hud);
-            _uiService.ShowWindow(ViewType.MainMenu);
-            _uiService.HideWindow(ViewType);
+            UIService.HideWindow(ViewType.Hud);
+            UIService.ShowWindow(ViewType.MainMenu);
+            UIService.HideWindow(ViewType);
             _gameSessionRunner.EndGame();
             _gamePauseProcessor.SetPaused(false);
         }

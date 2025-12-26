@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using VContainer.Unity;
 
 namespace _Maze.CodeBase.Infrastructure
 {
@@ -8,6 +9,6 @@ namespace _Maze.CodeBase.Infrastructure
         Camera CachedCamera { get; }
         Transform UISpawnPoint { get; }
         Transform HUDSpawnPoint { get; }
-        Transform PlayerSpawnPoint { get; }
+        LifetimeScope LifetimeScope { get; }
     }
 }
