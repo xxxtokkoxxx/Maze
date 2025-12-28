@@ -39,7 +39,6 @@ namespace _Maze.CodeBase.UI
         public void UnregisterController<TView>(BaseUiController<TView> uiController)
             where TView : IView
         {
-            Debug.Log("unregister controller");
             _controllers.Remove(uiController);
         }
 

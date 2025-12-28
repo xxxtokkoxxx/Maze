@@ -4,6 +4,6 @@ namespace _Maze.CodeBase.Infrastructure.StateMachine
 {
     public interface IState
     {
-        UniTask Enter();
+        UniTask Enter(object payload = null);
     }
 }

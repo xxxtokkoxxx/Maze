@@ -1,7 +1,7 @@
 using _Maze.CodeBase.GamePlay.Camera;
+using _Maze.CodeBase.GamePlay.Environment;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
-using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.GameSession
 {
@@ -11,17 +11,19 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly ICameraFollowSystem _cameraFollowSystem;
         private readonly IGamePlayProcessor _gamePlayProcessor;
         private readonly IGamePauseProcessor _gamePauseProcessor;
+        private readonly ILevelElementsContainer _levelElementsContainer;
 
         public GameSessionRunner(IPlayerFactory playerFactory,
             ICameraFollowSystem cameraFollowSystem,
             IGamePlayProcessor gamePlayProcessor,
-            IGamePauseProcessor gamePauseProcessor)
+            IGamePauseProcessor gamePauseProcessor,
+            ILevelElementsContainer levelElementsContainer)
         {
             _playerFactory = playerFactory;
             _cameraFollowSystem = cameraFollowSystem;
             _gamePlayProcessor = gamePlayProcessor;
             _gamePauseProcessor = gamePauseProcessor;
-            Debug.Log("call");
+            _levelElementsContainer = levelElementsContainer;
         }
 
         public void StartGame()
@@ -31,22 +33,13 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
             IPlayer player = _playerFactory.GetPlayer();
 
-            _cameraFollowSystem.Initialize(player.View.transform);
+            _cameraFollowSystem.SetTarget(player.View.transform);
             _gamePlayProcessor.Run();
-            Debug.Log("start game");
         }
 
         public void RestartGame()
         {
             _gamePlayProcessor.Reset();
-
-            IPlayer player = _playerFactory.GetPlayer();
-
-            if (player == null)
-            {
-                player = _playerFactory.GetPlayer();
-                _cameraFollowSystem.Initialize(player.View.transform);
-            }
         }
 
         public void EndGame()

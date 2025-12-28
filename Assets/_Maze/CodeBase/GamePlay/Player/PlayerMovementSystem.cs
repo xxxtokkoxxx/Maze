@@ -20,7 +20,8 @@ namespace _Maze.CodeBase.GamePlay.Player
         private readonly IGamePauseProcessor _gamePauseProcessor;
         private readonly IPlayerFactory _playerFactory;
 
-        public PlayerMovementSystem(IInputStateProvider inputStateProvider, IGamePauseProcessor gamePauseProcessor, IPlayerFactory playerFactory)
+        public PlayerMovementSystem(IInputStateProvider inputStateProvider, IGamePauseProcessor gamePauseProcessor,
+            IPlayerFactory playerFactory)
         {
             _inputStateProvider = inputStateProvider;
             _gamePauseProcessor = gamePauseProcessor;
@@ -51,6 +52,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
             Vector3 playerPos = _playerView.View.transform.position;
             RaycastHit2D result = Physics2D.Raycast(playerPos, direction, Mathf.Infinity);
+
             if (result.collider != null)
             {
                 float movementTime = Vector2.Distance(playerPos, result.point) * 0.025f;

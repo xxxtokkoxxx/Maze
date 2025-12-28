@@ -1,3 +1,4 @@
+using _Maze.CodeBase.GamePlay.Environment;
 using _Maze.CodeBase.GamePlay.Exit;
 using _Maze.CodeBase.GamePlay.Pause;
 using _Maze.CodeBase.GamePlay.Player;
@@ -18,21 +19,21 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IHeadsUpDisplay _headsUpDisplay;
         private readonly IGamePauseProcessor _pauseProcessor;
         private readonly IGameplayEventBus _gameplayEventBus;
-        private readonly IPlayerFactory _playerFactory;
+        private readonly ILevelElementsContainer _levelElementsContainer;
 
         public GamePlayProcessor(IInputStateProvider inputStateProvider,
             IUIService uiService,
             IHeadsUpDisplay headsUpDisplay,
             IGamePauseProcessor pauseProcessor,
             IGameplayEventBus gameplayEventBus,
-            IPlayerFactory playerFactory)
+            ILevelElementsContainer levelElementsContainer)
         {
             _inputStateProvider = inputStateProvider;
             _uiService = uiService;
             _headsUpDisplay = headsUpDisplay;
             _pauseProcessor = pauseProcessor;
             _gameplayEventBus = gameplayEventBus;
-            _playerFactory = playerFactory;
+            _levelElementsContainer = levelElementsContainer;
         }
 
         public void Run()
@@ -46,6 +47,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _inputStateProvider.SetEnabled(true);
             _gameplayEventBus.Subscribe<PlayerDeathMessage>(OnPlayerDeath);
             _gameplayEventBus.Subscribe<LevelCompletedMessage>(OnLevelCompleted);
+            _levelElementsContainer.SaveElementsState();
         }
 
         public void Reset()
@@ -53,8 +55,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _headsUpDisplay.UpdateTimer(0);
             _headsUpDisplay.UpdateStepsCount(0);
             _inputStateProvider.SetEnabled(true);
-            IPlayer player = _playerFactory.GetPlayer();
-            player.ResetPosition();
+            _levelElementsContainer.RestoreLevelElementsInitialState();
         }
 
         public void Stop()
@@ -71,7 +72,8 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         private void OnLevelCompleted(LevelCompletedMessage levelCompleted)
         {
-            Debug.Log("Level completed");
+            _uiService.ShowWindow(ViewType.GameOver);
+            _inputStateProvider.SetEnabled(false);
         }
 
         private void OnPlayerDeath(PlayerDeathMessage playerDeathMessage)

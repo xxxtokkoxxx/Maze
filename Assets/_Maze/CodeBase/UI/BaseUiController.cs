@@ -20,7 +20,6 @@ namespace _Maze.CodeBase.UI
         public void Initialize()
         {
             UIService.RegisterController(this);
-            Debug.Log("register conroller " + GetType().Name);
         }
 
         public void Dispose()

@@ -12,8 +12,8 @@ namespace _Maze.CodeBase.Infrastructure.StateMachine
         {
             GameStateMachine = gameStateMachine;
         }
-        
-        public abstract UniTask Enter();
+
+        public abstract UniTask Enter(object payload = null);
 
         public void Initialize()
         {

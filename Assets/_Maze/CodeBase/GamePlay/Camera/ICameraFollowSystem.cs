@@ -4,7 +4,7 @@ namespace _Maze.CodeBase.GamePlay.Camera
 {
     public interface ICameraFollowSystem
     {
-        void Initialize(Transform target);
+        void SetTarget(Transform target);
         void Disable();
     }
 }

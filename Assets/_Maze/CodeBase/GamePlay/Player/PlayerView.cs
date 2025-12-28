@@ -1,5 +1,5 @@
 ﻿using _Maze.CodeBase.Animations;
-using _Maze.CodeBase.Extensions;
+using _Maze.CodeBase.GamePlay.Environment;
 using _Maze.CodeBase.GamePlay.Maze;
 using _Maze.CodeBase.Infrastructure;
 using UnityEngine;
@@ -7,11 +7,14 @@ using VContainer;
 
 namespace _Maze.CodeBase.GamePlay.Player
 {
-    public class PlayerView : MonoBehaviour, IPlayer
+    public class PlayerView : MonoBehaviour, IPlayer, ILevelElement
     {
         [SerializeField] private PlayerAnimator _playerAnimator;
         [SerializeField] private SpriteRenderer _playerVisuals;
         [SerializeField] private Transform _raycastOffset;
+
+        private Vector2 _initialPosition;
+        private Quaternion _initialRotation;
 
         private int _health = 1;
         private IGameplayEventBus _gameplayEventBus;
@@ -33,6 +36,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         public void PlayLevelCompletionAnimation()
         {
+            SetVisualsDirection(Direction.Down);
             _playerAnimator.PlayDisappearance();
         }
 
@@ -72,8 +76,23 @@ namespace _Maze.CodeBase.GamePlay.Player
         {
             _playerAnimator.PlayIdle();
             Visuals.color = Color.white;
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
+            transform.localPosition = _initialPosition;
+            transform.localRotation = _initialRotation;
+        }
+
+        public void SaveState()
+        {
+            Debug.Log("set initial position " + _initialPosition);
+            _initialPosition = transform.localPosition;
+            _initialRotation = transform.localRotation;
+        }
+
+        public void RestoreState()
+        {
+            _playerAnimator.PlayIdle();
+            transform.localPosition = _initialPosition;
+            transform.localRotation = _initialRotation;
+            Debug.Log("restore state");
         }
 
 #if UNITY_EDITOR

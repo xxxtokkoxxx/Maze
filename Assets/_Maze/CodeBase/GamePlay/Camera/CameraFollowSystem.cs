@@ -17,7 +17,7 @@ namespace _Maze.CodeBase.GamePlay.Camera
             _monoBehavioursProvider = monoBehavioursProvider;
         }
 
-        public void Initialize(Transform target)
+        public void SetTarget(Transform target)
         {
             _target = target;
             _isEnabled = true;

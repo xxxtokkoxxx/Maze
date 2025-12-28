@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using _Maze.CodeBase.GamePlay.Player;
 using UnityEngine;
 using VContainer;
@@ -10,6 +11,7 @@ namespace _Maze.CodeBase.GamePlay.Environment
         [SerializeField] private Transform _collectiblesTileMap;
         [SerializeField] private Transform _playerTilemap;
         private IObjectResolver _objectResolver;
+        private List<ILevelElement> _levelElements = new List<ILevelElement>();
 
         [Inject]
         public void Inject(IObjectResolver objectResolver)
@@ -17,9 +19,45 @@ namespace _Maze.CodeBase.GamePlay.Environment
             _objectResolver = objectResolver;
         }
 
-        private void Start()
+        public void InjectDependenciesIntoLevelObjects()
         {
-            InjectsObjects();
+            for (int i = 0; i < _playerTilemap.childCount; i++)
+            {
+                GameObject element = _playerTilemap.GetChild(i).gameObject;
+                bool componentExists = element.TryGetComponent(out ILevelElement levelElement);
+
+                if (!componentExists)
+                {
+                    Debug.LogError($"Level element:{element.name} is not inherit from ILevelElement");
+                    return;
+                }
+
+                _objectResolver.InjectGameObject(element);
+                _levelElements.Add(levelElement);
+            }
+
+            for (int i = 0; i < _collectiblesTileMap.childCount; i++)
+            {
+                GameObject element = _collectiblesTileMap.GetChild(i).gameObject;
+                bool componentExists = element.TryGetComponent(out ILevelElement levelElement);
+
+                if (!componentExists)
+                {
+                    Debug.LogError($"Level element:{element.name} is not inherit from ILevelElement");
+                    return;
+                }
+
+                _objectResolver.InjectGameObject(_collectiblesTileMap.GetChild(i).gameObject);
+                _levelElements.Add(levelElement);
+            }
+        }
+
+        public void SaveElementsState()
+        {
+            foreach (ILevelElement levelElement in _levelElements)
+            {
+                levelElement.SaveState();
+            }
         }
 
         public PlayerView GetPlayer()
@@ -27,16 +65,11 @@ namespace _Maze.CodeBase.GamePlay.Environment
             return _playerTilemap.GetComponentInChildren<PlayerView>();
         }
 
-        private void InjectsObjects()
+        public void RestoreLevelElementsInitialState()
         {
-            for (int i = 0; i < _playerTilemap.childCount; i++)
+            foreach (ILevelElement levelElement in _levelElements)
             {
-                _objectResolver.InjectGameObject(_playerTilemap.GetChild(i).gameObject);
-            }
-
-            for (int i = 0; i < _collectiblesTileMap.childCount; i++)
-            {
-                _objectResolver.InjectGameObject(_collectiblesTileMap.GetChild(i).gameObject);
+                levelElement.RestoreState();
             }
         }
     }
