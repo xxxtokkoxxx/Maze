@@ -6,7 +6,6 @@ using _Maze.CodeBase.Infrastructure;
 using _Maze.CodeBase.Input;
 using _Maze.CodeBase.UI;
 using _Maze.CodeBase.UI.Hud;
-using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.GameSession
 {
@@ -20,13 +19,15 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         private readonly IGamePauseProcessor _pauseProcessor;
         private readonly IGameplayEventBus _gameplayEventBus;
         private readonly ILevelElementsContainer _levelElementsContainer;
+        private readonly IPlayerMovementSystem _playerMovementSystem;
 
         public GamePlayProcessor(IInputStateProvider inputStateProvider,
             IUIService uiService,
             IHeadsUpDisplay headsUpDisplay,
             IGamePauseProcessor pauseProcessor,
             IGameplayEventBus gameplayEventBus,
-            ILevelElementsContainer levelElementsContainer)
+            ILevelElementsContainer levelElementsContainer,
+            IPlayerMovementSystem playerMovementSystem)
         {
             _inputStateProvider = inputStateProvider;
             _uiService = uiService;
@@ -34,6 +35,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
             _pauseProcessor = pauseProcessor;
             _gameplayEventBus = gameplayEventBus;
             _levelElementsContainer = levelElementsContainer;
+            _playerMovementSystem = playerMovementSystem;
         }
 
         public void Run()
@@ -62,6 +64,8 @@ namespace _Maze.CodeBase.GamePlay.GameSession
         {
             _isEnabled = false;
             _pauseProcessor.RemovePausable(this);
+            ShowGameOver();
+            _playerMovementSystem.StopMovement();
             _gameplayEventBus.UnSubscribe<PlayerDeathMessage>(OnPlayerDeath);
         }
 
@@ -78,7 +82,7 @@ namespace _Maze.CodeBase.GamePlay.GameSession
 
         private void OnPlayerDeath(PlayerDeathMessage playerDeathMessage)
         {
-            ShowGameOver();
+            Stop();
         }
 
         private void ShowGameOver()

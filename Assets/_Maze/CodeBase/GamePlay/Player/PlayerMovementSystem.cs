@@ -19,6 +19,7 @@ namespace _Maze.CodeBase.GamePlay.Player
         private readonly IInputStateProvider _inputStateProvider;
         private readonly IGamePauseProcessor _gamePauseProcessor;
         private readonly IPlayerFactory _playerFactory;
+        private TweenerCore<Vector3, Vector3, VectorOptions> _moveAnimation;
 
         public PlayerMovementSystem(IInputStateProvider inputStateProvider, IGamePauseProcessor gamePauseProcessor,
             IPlayerFactory playerFactory)
@@ -40,6 +41,19 @@ namespace _Maze.CodeBase.GamePlay.Player
             _inputStateProvider.OnPlayerMovement -= OnMove;
         }
 
+        public void SetPaused(bool isPaused)
+        {
+            _isPaused = isPaused;
+        }
+
+        public void StopMovement()
+        {
+            if (_moveAnimation != null && _moveAnimation.IsActive())
+            {
+                _moveAnimation.Kill();
+            }
+        }
+
         private void OnMove(Vector2 direction)
         {
             if (_isPaused)
@@ -57,18 +71,13 @@ namespace _Maze.CodeBase.GamePlay.Player
             {
                 float movementTime = Vector2.Distance(playerPos, result.point) * 0.025f;
 
-                TweenerCore<Vector3, Vector3, VectorOptions> moveAnima = _playerView.View.transform
+                _moveAnimation = _playerView.View.transform
                     .DOMove(new Vector2(result.point.x - _playerView.Visuals.bounds.size.x / 2 * direction.x,
                         result.point.y - _playerView.Visuals.bounds.size.y / 2 * direction.y), movementTime);
 
                 _playerView.PlayJumpAnimation(movementTime);
                 _playerView.SetVisualsDirection(direction.ToDirection());
             }
-        }
-
-        public void SetPaused(bool isPaused)
-        {
-            _isPaused = isPaused;
         }
     }
 }
