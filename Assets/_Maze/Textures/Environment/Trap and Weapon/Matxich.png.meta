@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f024171aa3cc6654c83e381e436b0e3c
+guid: eed8442a1bbd84130a1d3668574d8c09
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3407558383636945126
-    second: 91ea13c1-0aa3-4b9b-b8a4-62e8f78c4ff9-md_0
+      213: -1722387860532589080
+    second: Matxich_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,30 +109,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 91ea13c1-0aa3-4b9b-b8a4-62e8f78c4ff9-md_0
+      name: Matxich_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 800
-        height: 800
+        width: 4
+        height: 4
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a176aef34bbe5b0d0800000000000000
-      internalID: -3407558383636945126
+      spriteID: 8ed828fcd59d818e0800000000000000
+      internalID: -1722387860532589080
       vertices: []
       indices: 
       edges: []
@@ -161,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      91ea13c1-0aa3-4b9b-b8a4-62e8f78c4ff9-md_0: -3407558383636945126
+      Matxich_0: -1722387860532589080
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

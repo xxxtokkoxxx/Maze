@@ -63,6 +63,9 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         public void DoDamage(int damage)
         {
+            if (_health == 0)
+                return;
+            
             _health -= damage;
 
             if (_health <= 0)
@@ -89,6 +92,7 @@ namespace _Maze.CodeBase.GamePlay.Player
 
         public void RestoreState()
         {
+            _health = 1;
             _playerAnimator.PlayIdle();
             transform.localPosition = _initialPosition;
             transform.localRotation = _initialRotation;

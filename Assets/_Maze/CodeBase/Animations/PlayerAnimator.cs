@@ -36,6 +36,7 @@ namespace _Maze.CodeBase.Animations
         public void PlayDeath()
         {
             _animator.SetTrigger(PlayerAnimatorHashes.Death);
+            Debug.Log("play ");
         }
 
         [Button]
