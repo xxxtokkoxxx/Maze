@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using Object = UnityEngine.Object;
 
 namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
@@ -77,18 +78,30 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
             return handle;
         }
 
-        private bool TryToGetAssetFromCache<TAsset>(string key, out TAsset asset) where TAsset : class
+        public async UniTask<SceneInstance> LoadScene(string path)
         {
-            asset = default;
+            bool assetExist = TryToGetAssetFromCache(path, out SceneInstance asset);
 
-            LoadedAsset loadedAsset = _cache.FirstOrDefault(a => a.Address == key);
-            if (loadedAsset == null)
+            if (assetExist)
             {
-                return false;
+                return asset;
             }
 
-            asset = loadedAsset.LoadedObject as TAsset;
-            return true;
+            AsyncOperationHandle<SceneInstance> operationHandle;
+
+            try
+            {
+                operationHandle = Addressables.LoadSceneAsync(path);
+                await operationHandle.Task;
+            }
+            catch (Exception e)
+            {
+                throw new InvalidDataException($"Failed to load asset: {path}", e);
+            }
+
+            SceneInstance result = operationHandle.Result;
+            _cache.Add(new LoadedAsset(path, operationHandle, result));
+            return result;
         }
 
         public void Release(string address)
@@ -102,6 +115,20 @@ namespace _Maze.CodeBase.Infrastructure.ResourcesManagement
 
             ReleaseInternal(objectToRelease.Handle);
             _cache.Remove(objectToRelease);
+        }
+
+        private bool TryToGetAssetFromCache<TAsset>(string key, out TAsset asset)
+        {
+            asset = default;
+
+            LoadedAsset loadedAsset = _cache.FirstOrDefault(a => a.Address == key);
+            if (loadedAsset == null)
+            {
+                return false;
+            }
+
+            asset = loadedAsset.LoadedObject is TAsset loadedObject ? loadedObject : default;
+            return true;
         }
 
         private void ReleaseInternal(AsyncOperationHandle handle)
