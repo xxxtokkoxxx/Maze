@@ -4,6 +4,6 @@ namespace _Maze.CodeBase.Scenes
 {
     public interface ISceneLoaderService
     {
-        UniTask LoadScene(string sceneName);
+        UniTask LoadScene(string sceneName, bool releasePreviousScene = false);
     }
 }

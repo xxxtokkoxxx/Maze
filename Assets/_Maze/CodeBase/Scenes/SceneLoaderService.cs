@@ -16,7 +16,7 @@ namespace _Maze.CodeBase.Scenes
             _assetsLoaderService = assetsLoaderService;
         }
 
-        public async UniTask LoadScene(string sceneName)
+        public async UniTask LoadScene(string sceneName, bool releasePreviousScene = false)
         {
             using (LifetimeScope.EnqueueParent(_monoBehavioursProvider.LifetimeScope))
             {
