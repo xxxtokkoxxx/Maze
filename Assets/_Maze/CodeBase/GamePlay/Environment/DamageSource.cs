@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.Environment
 {
+    [RequireComponent(typeof(BoxCollider2D))]
     public class DamageSource : MonoBehaviour
     {
         [SerializeField] private int _damage = 1;

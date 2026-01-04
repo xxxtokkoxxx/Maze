@@ -8,23 +8,31 @@ using UnityEngine;
 
 namespace _Maze.CodeBase.GamePlay.Environment.Behaviours
 {
-    [ExecuteInEditMode]
     public class MoverAccordingToRoute : MonoBehaviour, ILevelElement
     {
         [SerializeField] private List<Vector2> _route;
-        [SerializeField] private List<Vector2> _initialRoute;
-        [SerializeField] private float _movementDuration = 1;
-        [SerializeField] private bool _enableReverse;
-        
+        [SerializeField] private bool _enableBacktrack;
+        [SerializeField] private float _moveSpeed = 10;
+        [SerializeField] private bool _reverse;
+
+        private List<Vector2> _initialRoute;
         private Vector2 _initialPosition;
+
+        private void Awake()
+        {
+            if (_reverse)
+            {
+                _route.Reverse();
+            }
+        }
 
         private void Start()
         {
             _initialRoute = _route;
-            transform.localPosition = _initialRoute.Any() 
+            transform.localPosition = _initialRoute.Any()
                 ? _initialRoute.First()
                 : transform.localPosition;
-            
+
             StartCoroutine(Move());
         }
 
@@ -39,10 +47,9 @@ namespace _Maze.CodeBase.GamePlay.Environment.Behaviours
             transform.localPosition = _initialPosition;
             _route = _initialRoute;
             StopAllCoroutines();
-            transform.DOKill();
             StartCoroutine(Move());
         }
-        
+
         private IEnumerator Move()
         {
             if (_route == null || _route.Count <= 0)
@@ -58,11 +65,11 @@ namespace _Maze.CodeBase.GamePlay.Environment.Behaviours
                 index++;
                 if (index >= _route.Count)
                 {
-                    if (_enableReverse)
+                    if (_enableBacktrack)
                     {
                         _route.Reverse();
                     }
-                    
+
                     index = 0;
                 }
             }
@@ -70,8 +77,12 @@ namespace _Maze.CodeBase.GamePlay.Environment.Behaviours
 
         private IEnumerator MoveNextPoint(Vector2 position)
         {
-            transform.DOLocalMove(position, _movementDuration);
-            yield return new WaitForSeconds(_movementDuration);
+            while (Vector2.Distance(transform.localPosition, position) > 0.01f)
+            {
+                transform.localPosition =
+                    Vector3.MoveTowards(transform.localPosition, position, Time.deltaTime * _moveSpeed);
+                yield return null;
+            }
         }
 
 #if UNITY_EDITOR
@@ -87,7 +98,7 @@ namespace _Maze.CodeBase.GamePlay.Environment.Behaviours
         {
             transform.localPosition += Vector3.left;
         }
-        
+
         [Button]
         public void MoveRight()
         {
@@ -106,7 +117,6 @@ namespace _Maze.CodeBase.GamePlay.Environment.Behaviours
             transform.localPosition += Vector3.down;
         }
 
-        
         private void OnDrawGizmosSelected()
         {
             if (_route == null || _route.Count <= 0)
