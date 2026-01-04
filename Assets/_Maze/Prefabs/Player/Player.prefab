@@ -193,6 +193,7 @@ MonoBehaviour:
   _playerAnimator: {fileID: 2122255099171746793}
   _playerVisuals: {fileID: 4658101301188483286}
   _raycastOffset: {fileID: 7690760895091874408}
+  _rigidBody: {fileID: 1107032186636734101}
 --- !u!114 &2122255099171746793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,7 +232,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!61 &576062658617336696
 BoxCollider2D:

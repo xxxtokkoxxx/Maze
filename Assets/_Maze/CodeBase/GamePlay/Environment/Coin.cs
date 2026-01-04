@@ -21,6 +21,7 @@ namespace _Maze.CodeBase.GamePlay.Environment
 
         public void OnTriggerEnter2D(Collider2D other)
         {
+            Debug.Log(_isPickedUp);
             if (!_isPickedUp && other.CompareTag(Tags.Player))
             {
                 _gameplayEventBus.Publish(new PickCoinEvent());

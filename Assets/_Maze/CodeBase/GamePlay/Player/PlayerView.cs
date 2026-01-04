@@ -12,13 +12,14 @@ namespace _Maze.CodeBase.GamePlay.Player
         [SerializeField] private PlayerAnimator _playerAnimator;
         [SerializeField] private SpriteRenderer _playerVisuals;
         [SerializeField] private Transform _raycastOffset;
+        [SerializeField] private Rigidbody2D _rigidBody;
 
         private Vector2 _initialPosition;
         private Quaternion _initialRotation;
-
         private int _health = 1;
+        
         private IGameplayEventBus _gameplayEventBus;
-
+        public Rigidbody2D Rigidbody => _rigidBody;
         public SpriteRenderer Visuals => _playerVisuals;
 
         public GameObject View => gameObject;

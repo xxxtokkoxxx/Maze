@@ -19,7 +19,8 @@ namespace _Maze.CodeBase.GamePlay.Player
         private readonly IInputStateProvider _inputStateProvider;
         private readonly IGamePauseProcessor _gamePauseProcessor;
         private readonly IPlayerFactory _playerFactory;
-        private TweenerCore<Vector3, Vector3, VectorOptions> _moveAnimation;
+        private TweenerCore<Vector2, Vector2, VectorOptions> _moveAnimation;
+        private float _moveSpeed = 0.035f;
 
         public PlayerMovementSystem(IInputStateProvider inputStateProvider, IGamePauseProcessor gamePauseProcessor,
             IPlayerFactory playerFactory)
@@ -69,9 +70,9 @@ namespace _Maze.CodeBase.GamePlay.Player
 
             if (result.collider != null)
             {
-                float movementTime = Vector2.Distance(playerPos, result.point) * 0.025f;
+                float movementTime = Vector2.Distance(playerPos, result.point) * _moveSpeed;
 
-                _moveAnimation = _playerView.View.transform
+                _moveAnimation = _playerView.Rigidbody
                     .DOMove(new Vector2(result.point.x - _playerView.Visuals.bounds.size.x / 2 * direction.x,
                         result.point.y - _playerView.Visuals.bounds.size.y / 2 * direction.y), movementTime);
 
